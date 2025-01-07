@@ -152,7 +152,6 @@ When data is sent over the internet, it can pass through various devices and net
 However, with encryption (using HTTPS), the data is scrambled into an unreadable format before it leaves your laptop. This is called encryption. When the data reaches the server, it is decrypted using a secret private key (“<anyname>.key”), making it readable again only to the server. This ensures that even if the data is intercepted during its journey across the internet, it cannot be read or tampered with.
 In summary, encryption protects sensitive information, like credit card details, by making sure it is scrambled during transmission, and only the server can unscramble (decrypt) it upon arrival. Without encryption, the data is vulnerable to interception and misuse.
 
-
 ---
 
 # Establishing a Secure Connection (SSL/TLS Handshake)
