@@ -1,5 +1,7 @@
 # HTTP and HTTPS Overview
 
+[Watch this video overview on HTTP and HTTPS](https://youtu.be/s6HdHkXLhtk)
+
 This repository contains a detailed overview of **HTTP** (HyperText Transfer Protocol) and **HTTPS** (HyperText Transfer Protocol Secure), their functionalities, and related concepts like SSL, Apache, and encryption processes.
 
 ## Key Highlights
