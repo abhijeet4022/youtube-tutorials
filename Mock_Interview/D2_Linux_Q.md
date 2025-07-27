@@ -180,7 +180,7 @@
 
 30. What are the default port numbers for SSH, RDP, HTTP, HTTPS, and NFS?
 
-   * SSH: 22, RDP: 3389, HTTP: 80, HTTPS: 443, NFS: 2049
+   * SSH: 22, RDP: 3389, HTTP: 80, HTTPS: 443, NFS: 2049, DNS: 53, SMTP: 25, FTP: 21, MySQL: 3306, PostgreSQL: 5432, Redis: 6379, MongoDB: 27017, Elasticsearch: 9200, RabbitMQ: 5672, Memcached: 11211, Docker: 2375 (unencrypted) or 2376 (encrypted), Kubernetes API: 6443, Prometheus: 9090, Grafana: 3000, Jenkins: 8080, Tomcat: 8080.
 
 31. What is an SSL certificate?
 
