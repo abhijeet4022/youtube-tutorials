@@ -1,262 +1,254 @@
-# AWS and Linux Interview Questions with Answers (For 3+ Years Experience)
+**Linux Interview FAQs**
 
-“Hi Abhijeet, thank you for joining. Let's begin with a few technical questions related to your resume.”
+1. What is the use case of /opt and /var/lib? Explain with one example.
 
----
+    * `/opt` is used for installing third-party applications, For example, installing third-party software like Google Chrome or Splunk.
+      Example: `/opt/splunk`
 
-### Topics Covered:
+    * `/var/lib` is used to store persistent and dynamic data for services and system applications.
+      For example:
 
-* Linux (LVM, Cron, Boot Process, etc.)
-* AWS (EC2, ELB, S3, CloudWatch, etc.)
+        * MySQL stores database files in `/var/lib/mysql`.
 
----
+        * systemd stores persistent journal logs in `/var/lib/systemd/journald`, especially when `/var/log/journal` is not configured. This ensures logs are preserved across reboots.
 
-## 🐧 Linux Questions & Answers
+        * Package managers may also store metadata here (e.g., `/var/lib/dpkg` for APT, `/var/lib/rpm` for YUM).
 
-### 1. **LVM**
+      > This directory is essential for maintaining the operational state of services between system restarts.
 
-You're running out of space on `/var`, which is an LVM volume. Walk me through the steps to increase the size of `/var` by 5GB. Assume a new disk `/dev/xvdf` is attached.
+2. Which folder is responsible for storing logs?
 
-**Answer:**
+    * `/var/log` is the default directory for storing log files in Linux.
 
-```bash
-# 1. Create a new partition
-fdisk /dev/xvdf
-# Create primary partition and save
+3. In which file are SSH-related logs stored?
 
-# 2. Create physical volume
-pvcreate /dev/xvdf1
+    * SSH logs are usually found in `/var/log/auth.log` or `/var/log/secure`, depending on the Linux distribution.
 
-# 3. Extend volume group
-vgextend <vg_name> /dev/xvdf1
+4. Suppose you're on a call with a user trying to SSH into a machine. How would you view SSH-related logs in real time?
 
-# 4. Extend logical volume
-lvextend -L +5G /dev/<vg_name>/<lv_name>
+    * Use: `tail -f /var/log/auth.log or /var/log/secure` or `journalctl -f -u sshd`
 
-# 5. Resize filesystem
-resize2fs /dev/<vg_name>/<lv_name>   # For ext4
-xfs_growfs /var                       # For xfs
+5. What do the five fields (stars) in a cron job represent?
+
+    * Minute, Hour, Day of Month, Month, Day of Week.
+
+6. You need to run a script every night at 12:30 AM. How would you schedule that using a cron job?
+
+    * `30 0 * * * /path/to/script.sh`
+      This is a cron job format and should be placed in the crontab. We can add it using `crontab -e` for user-specific jobs or `/etc/crontab` for system-wide.
+
+7. You have a requirement: /var/log/messages should rotate weekly, retain 4 files, have permissions "root root 640", be compressed, and not rotate if empty. How would you configure this using logrotate?
+
+    * Create a file `/etc/logrotate.d/messages` with:
+
+      ```
+      /var/log/messages {
+          weekly
+          rotate 4
+          compress
+          missingok
+          notifempty
+          create 640 root root
+      }
+      ```
+
+8. How would you extend swap space on an LVM-based system from 4GB to 8GB?
+
+    * Steps:
+
+      ```
+      free -h  # Check current swap space
+      cat /proc/swaps  # Verify swap devices
+      swapoff -v /dev/mapper/vg0-swap # Disable swap
+      lvextend -L 8G /dev/mapper/vg0-swap # Extend the logical volume
+      mkswap /dev/mapper/vg0-swap # Recreate the swap area
+      swapon /dev/mapper/vg0-swap # Enable the swap
+      swapon -s  # Verify the new swap space
+      ```
+
+9. You are trying to create a file, but even though there is enough space, it fails. What could be the reasons?
+
+    * Possible reasons: inode exhaustion, permission issues, disk quota limits, or read-only file system.
+      If the issue is due to inode exhaustion, you can:
+
+        * Identify the problem using: `df -i`
+        * Locate directories with a high number of small files using: `find /path -xdev -type f | cut -d/ -f2 | sort | uniq -c | sort -n`
+        * Remove or archive old/unnecessary files
+        * Alternatively, repartition the disk with a larger inode ratio.
+
+10. How can you ensure that a specific service runs automatically after the server reboots?
+
+* Use: `systemctl enable service-name`
+
+11. What is the directory where all systemd service unit files are stored?
+
+* `/etc/systemd/system` for custom services, `/usr/lib/systemd/system` for package-installed services.
+
+12. Which directories typically contain all commands in Linux?
+
+* `/bin` and `/usr/bin` contain essential and non-essential user commands for all users; `/sbin` and `/usr/sbin` contain system and administrative commands mainly used by the root user.
+
+13. What is the use case of NFS and how can you configure it? Suppose you want to share a 20GB mount point (/mnt/share) using NFS—how would you set it up, and how would a client machine mount it permanently?
+
+* On server: Add `/mnt/share *(rw,sync)` in `/etc/exports`, run `exportfs -a` and start `nfs-server`
+  On client: Add `server:/mnt/share /mnt nfs defaults 0 0` in `/etc/fstab` and run `mount -a`
+
+14. Can you explain the entries inside /etc/fstab and the use case of this file?
+
+* `/etc/fstab` stores persistent mount info. Fields: device, mount point, fs type, options, dump (backup), fsck pass.
+
+15. Suppose you have a directory /mnt/share and the requirement is that any new files or folders created should have group ownership set to "linuxteam". How would you configure that?
+
+* Set group: `chgrp linuxteam /mnt/share`
+  Enable SGID: `chmod g+s /mnt/share`
+
+16. In a directory (e.g., /mnt) where all users have full permissions, how would you restrict other users from deleting any files.?
+
+* Use sticky bit: `chmod +t /mnt`
+
+17. How would you identify whether a path is a file or a directory in Linux?
+
+* Use: `ls -l` or `file path`
+  In `ls -l`, the first character indicates the file type:
+
+    * `-` = regular file
+    * `d` = directory
+    * `l` = symbolic link
+      This helps you quickly distinguish between file types in the listing.
+
+18. What is a soft link and how do you create one?
+
+* A soft link points to another file path. Create with: `ln -s target(source) linkname(destination)`
+
+19. How can you set the owner of /sap directory to "root" and the group owner to "sap"?
+
+* `chown root:sap /sap`
+
+20. How do you set permissions on /boot directory so the user has rwx, the group has read-only, and others have no access?
+
+* `chmod 740 /boot`
+
+21. How would you give both "linux" and "sap" teams rwx permissions on the /sap directory?
+
+* Using ACL:
+  `setfacl -m g:linux:rwx /sap`
+  `setfacl -m g:sap:rwx /sap`
+
+  > Ensure ACLs are enabled on the filesystem. You can view them with `getfacl /sap`.
+
+22. Which file stores user account information and what kind of details does it hold?
+
+* `/etc/passwd` holds username, UID, GID, home, shell, etc.
+
+23. What are the default home directories for normal users and the root user?
+
+* Normal users: `/home/username`
+  Root: `/root`
+
+24. What is a umask value and how do you change it temporarily and permanently?
+
+* `umask` defines default permissions.
+  Temporary: `umask 027`
+  Permanent: in `~/.bashrc` `/etc/bashrc` or `/etc/profile`
+
+25. When a user logs in to the server, which default file executes automatically to load the user's environment?
+
+* Files like `~/.bash_profile`, `~/.bashrc`, and `/etc/profile`
+
+26. How do you list all disks and their mount points?
+
+* Use: `lsblk`, `df -h`, `fdisk -l` or `mount`
+
+27. Suppose you’re using an httpd web server and there’s a file named private.html inside /var/www/html. How would you change its context to restrict access using SELinux?
+
+* Use:
+
+  ```bash
+  semanage fcontext -a -t default_t "/var/www/html/private.html"
+  restorecon -v /var/www/html/private.html
+  ```
+
+  > Note: `httpd_sys_content_t` allows the web server to read content. If you want to deny access, avoid assigning this type or use a type like `default_t`.
+
+28. What is the difference between -9 and -15 signals when using kill or pkill?
+
+* `-15` (SIGTERM) asks process to terminate gracefully. `-9` (SIGKILL) forcefully kills it.
+
+29. There is a user named "abc". How would you grant this user sudo access without prompting for a password?
+
+* Add line in sudoers: `abc ALL=(ALL) NOPASSWD: ALL`
+
+30. What are the default port numbers for SSH, RDP, HTTP, HTTPS, and NFS?
+
+* SSH: 22, RDP: 3389, HTTP: 80, HTTPS: 443, NFS: 2049, DNS: 53, SMTP: 25, FTP: 21, MySQL: 3306, PostgreSQL: 5432, Redis: 6379, MongoDB: 27017, Elasticsearch: 9200, RabbitMQ: 5672, Memcached: 11211, Docker: 2375 (unencrypted) or 2376 (encrypted), Kubernetes API: 6443, Prometheus: 9090, Grafana: 3000, Jenkins: 8080, Tomcat: 8080.
+
+31. What is an SSL certificate?
+
+* A digital certificate for encrypted communication and identity verification over HTTPS.
+
+32. How do you install a package like httpd in Linux?
+
+* RHEL/CentOS: `yum install httpd`
+  Ubuntu: `apt install apache2`
+
+33. Can you set up a custom repository in Linux?
+
+* Yes. Create a `.repo` file under `/etc/yum.repos.d/` (RHEL) or add APT source in `/etc/apt/sources.list`
+
+  For YUM (RHEL/CentOS):
+
+  Save this in `/etc/yum.repos.d/myrepo.repo`
+
+  ```
+  [myrepo]
+  name=My Custom Repo
+  baseurl=http://example.com/repo/
+  enabled=1
+  gpgcheck=0
+  ```
+
+  For APT (Debian/Ubuntu):
+  Add to `/etc/apt/sources.list`:
+
+  ```
+  deb http://example.com/debian stable main
+  ```
+
+34. What is the internal process flow when installing a package using a package manager?
+
+* Checks repo -> resolves dependencies -> downloads -> installs files -> runs post-scripts
+
+35. How do you list all configured repositories on a Linux system?
+
+* For RHEL/CentOS: `yum repolist all` or `dnf repolist all`
+* `yum repolist enabled` # To list only enabled repositories
+* `yum repolist disabled` # To list only disabled repositories
+* For Debian/Ubuntu: `apt-cache policy` or `apt list --installed`
+
+36. Which default file stores user password information?
+
+* `/etc/shadow`
+
+37. You need to enforce a password policy: expiration every 90 days, a warning 14 days before expiry, and automatic account disablement if not changed within 25 days. How would you implement this?
+
+* Use `chage` command:
+
+  ```
+  chage -M 90 -W 14 -I 25 username
+  ```
+38. Which file is responsible to carry the default values related to user password policy?
+
+* `/etc/login.defs` – This file defines site-specific configuration for the shadow password suite. It includes default password aging and user ID control values such as:
+
 ```
-
----
-
-### 2. **Boot Process**
-
-Can you explain what happens from the moment you power on a Linux system till you get the login prompt?
-
-**Answer:**
-
-1. **BIOS** – Initializes hardware and finds boot device.
-2. **MBR/GPT** – Loads the bootloader (GRUB).
-3. **GRUB** – Loads the kernel and initrd.
-4. **Kernel** – Initializes drivers, mounts root FS.
-5. **init/systemd** – Starts target services.
-6. **Login Prompt** – System ready for user login.
-
----
-
-### 3. **Cron Job**
-
-How do you ensure a cron job ran successfully? What logs do you check and how would you debug a failing cron?
-
-**Answer:**
-
-```bash
-grep CRON /var/log/cron   # or journalctl -u crond
+PASS_MAX_DAYS   90     # Maximum number of days a password is valid. After 90 days, the user must change the password.
+PASS_MIN_DAYS   7      # Minimum number of days between password changes. Users can't change the password within 7 days of the last change.
+PASS_WARN_AGE   14     # Number of days before password expiry that the user will be warned.
+UID_MIN         1000   # Minimum UID for regular (non-system) user accounts.
+UID_MAX         60000  # Maximum UID for regular user accounts.
 ```
+> These defaults are used when creating new users and enforcing password policies.
 
-* Ensure the script is executable.
-* Add logging: `myjob.sh > /tmp/myjob.log 2>&1`
+39. How do you find 30 days old a files in /tmp and delete those files in Linux?**
 
----
-
-### 4. **Logrotate**
-
-A log file is growing very large, and logrotate is not rotating it. What steps will you take to debug and fix this issue?
-
-**Answer:**
-
-* Check logrotate config: `/etc/logrotate.conf` or `/etc/logrotate.d/*`
-* Run manually in debug mode:
-
-```bash
-logrotate -d /etc/logrotate.conf
-```
-
-* Ensure correct permissions, paths, and postrotate scripts
-
----
-
-### 5. **OS Patching**
-
-Your team is planning to patch production servers. What are the steps you take before, during, and after patching?
-
-**Answer:**
-**Before:**
-
-* Notify stakeholders
-* Backup or snapshot
-* Check disk, memory, uptime
-
-**During:**
-
-* Use `dnf/yum update` or `apt upgrade`
-* Log output for review
-
-**After:**
-
-* Reboot if needed
-* Validate service health
-* Verify kernel version
-
----
-
-### 6. **Performance Monitoring**
-
-One of your EC2 Linux servers is running slow. What Linux commands and tools do you use to troubleshoot performance issues?
-
-**Answer:**
-
-```bash
-top/htop       # CPU, memory
-vmstat         # Memory and CPU activity
-iostat -x      # Disk I/O
-free -h        # Memory usage
-df -h / du -sh # Disk usage
-sar            # Historical stats
-```
-
----
-
-## ☁️ AWS Questions & Answers
-
-### 7. **EC2 & EBS**
-
-A user reports they can’t SSH into an EC2 instance. What steps do you take to troubleshoot?
-
-**Answer:**
-
-* Check security group (port 22 allowed)
-* Check network ACL
-* Validate key pair used
-* Use EC2 serial console or Systems Manager if locked out
-
----
-
-### 8. **S3**
-
-You need to allow access to a private S3 bucket only from a specific VPC. How would you implement that?
-
-**Answer:**
-Use S3 Bucket Policy with VPC condition and a VPC endpoint:
-
-```json
-{
-  "Condition": {
-    "StringEquals": {
-      "aws:SourceVpc": "vpc-xxxxxx"
-    }
-  }
-}
-```
-
----
-
-### 9. **ELB & ASG**
-
-An EC2 in an ASG is marked as unhealthy and getting replaced. How do you investigate what’s going wrong?
-
-**Answer:**
-
-* Check ELB health check path and response (expect HTTP 200)
-* Ensure backend service is up and responding
-* Review logs: `/var/log/cloud-init.log`, `/var/log/messages`
-* Validate user-data script and app readiness
-
----
-
-### 10. **IAM**
-
-Explain how IAM policies and roles differ. Also, how do you give an EC2 instance access to read an S3 bucket?
-
-**Answer:**
-
-* **IAM Role**: Assigned to resources; grants temporary permissions
-* **IAM Policy**: Defines permissions; can be attached to users, groups, roles
-
-To give EC2 S3 access:
-
-* Create IAM Role with S3 read policy
-* Attach the role to EC2 instance
-
----
-
-### 11. **Route 53 & DNS**
-
-How does Route 53 work with multiple availability zones? What routing policy would you use for low-latency global access?
-
-**Answer:**
-
-* Route 53 routes to healthy AZs via ELB
-* Use **Latency-based routing** for best global performance
-
----
-
-### 12. **Monitoring – CloudWatch, Prometheus, Grafana**
-
-You want to monitor disk usage across all EC2 instances and send alerts if it goes above 80%. How would you do that using CloudWatch and/or Prometheus-Grafana?
-
-**Answer:**
-**Using CloudWatch:**
-
-* Install CloudWatch Agent
-* Push `disk_used_percent` metric
-* Create alarm for `> 80%`
-
-**Using Prometheus + Grafana:**
-
-* Install node\_exporter
-* Create Grafana alert panel
-* Define PromQL rule: `node_filesystem_usage > 0.8`
-
----
-
-### 13. **EFS vs EBS**
-
-What is the difference between EBS and EFS? When would you prefer one over the other?
-
-**Answer:**
-
-| Feature     | EBS                        | EFS                     |
-| ----------- | -------------------------- | ----------------------- |
-| Mount Type  | One EC2 (AZ-specific)      | Multiple EC2 (multi-AZ) |
-| Performance | Block storage, low latency | Scalable, shared FS     |
-| Use Case    | DB, OS disk, local storage | Shared access, NFS-like |
-
----
-
-### 14. **Web Servers (Nginx/httpd)**
-
-You deployed a web app using Nginx, but when accessing the site, you get a 502 Bad Gateway. How do you troubleshoot this?
-
-**Answer:**
-
-* Check `upstream` block in Nginx config
-* Ensure backend app is running and reachable
-* Curl backend directly: `curl localhost:<port>`
-* Check Nginx logs: `/var/log/nginx/error.log`
-
----
-
-### 15. How do you create a new user and set a password?**
-
-* `useradd -m username`
-* `passwd username`
-
----
-
-### 16. How to check the current run level and user?**
-* `who -r`
-* `whoami`
-
----
+    * `find /tmp -type f -mtime +30 -exec rm -f {} \;`
