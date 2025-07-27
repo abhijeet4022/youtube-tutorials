@@ -26,7 +26,7 @@
 
 4. Suppose you're on a call with a user trying to SSH into a machine. How would you view SSH-related logs in real time?
 
-   * Use: `tail -f /var/log/auth.log` or `journalctl -f -u sshd`
+   * Use: `tail -f /var/log/auth.log or /var/log/secure` or `journalctl -f -u sshd`
 
 5. What do the five fields (stars) in a cron job represent?
 
@@ -60,7 +60,7 @@
      free -h  # Check current swap space
      cat /proc/swaps  # Verify swap devices
      swapoff -v /dev/mapper/vg0-swap # Disable swap
-     lvresize -L 8G /dev/mapper/vg0-swap # Resize the logical volume
+     lvextend -L 8G /dev/mapper/vg0-swap # Extend the logical volume
      mkswap /dev/mapper/vg0-swap # Recreate the swap area
      swapon /dev/mapper/vg0-swap # Enable the swap
      swapon -s  # Verify the new swap space
@@ -86,7 +86,7 @@
 
 12. Which directories typically contain all commands in Linux?
 
-   * `/bin`, `/sbin`, `/usr/bin`, `/usr/sbin`
+   * `/bin` and `/usr/bin` contain essential and non-essential user commands for all users; `/sbin` and `/usr/sbin` contain system and administrative commands mainly used by the root user.
 
 13. What is the use case of NFS and how can you configure it? Suppose you want to share a 20GB mount point (/mnt/share) using NFS—how would you set it up, and how would a client machine mount it permanently?
 
@@ -95,7 +95,7 @@
 
 14. Can you explain the entries inside /etc/fstab and the use case of this file?
 
-   * `/etc/fstab` stores persistent mount info. Fields: device, mount point, fs type, options, dump, pass.
+   * `/etc/fstab` stores persistent mount info. Fields: device, mount point, fs type, options, dump (backup), fsck pass.
 
 15. Suppose you have a directory /mnt/share and the requirement is that any new files or folders created should have group ownership set to "linuxteam". How would you configure that?
 
@@ -118,7 +118,7 @@
 
 18. What is a soft link and how do you create one?
 
-   * A soft link points to another file path. Create with: `ln -s target linkname`
+   * A soft link points to another file path. Create with: `ln -s target(source) linkname(destination)`
 
 19. How can you set the owner of /sap directory to "root" and the group owner to "sap"?
 
@@ -149,7 +149,7 @@
 
    * `umask` defines default permissions.
      Temporary: `umask 027`
-     Permanent: in `~/.bashrc` or `/etc/profile`
+     Permanent: in `~/.bashrc` `/etc/bashrc` or `/etc/profile`
 
 25. When a user logs in to the server, which default file executes automatically to load the user's environment?
 
@@ -157,7 +157,7 @@
 
 26. How do you list all disks and their mount points?
 
-   * Use: `lsblk`, `df -h`, or `mount`
+   * Use: `lsblk`, `df -h`, `fdisk -l` or `mount`
 
 27. Suppose you’re using an httpd web server and there’s a file named private.html inside /var/www/html. How would you change its context to restrict access using SELinux?
 
@@ -176,7 +176,7 @@
 
 29. There is a user named "abc". How would you grant this user sudo access without prompting for a password?
 
-   * Add line in sudoers: `abc ALL=(ALL) NOPASSWD:ALL`
+   * Add line in sudoers: `abc ALL=(ALL) NOPASSWD: ALL`
 
 30. What are the default port numbers for SSH, RDP, HTTP, HTTPS, and NFS?
 
@@ -221,13 +221,15 @@
 35. How do you list all configured repositories on a Linux system?
 
    * For RHEL/CentOS: `yum repolist all` or `dnf repolist all`
-     For Debian/Ubuntu: `apt-cache policy` or `apt list --installed`
+   * `yum repolist enabled` # To list only enabled repositories
+   * `yum repolist disabled` # To list only disabled repositories
+   * For Debian/Ubuntu: `apt-cache policy` or `apt list --installed`
 
-36. Which default file stores user password expiry information?
+36. Which default file stores user password information?
 
    * `/etc/shadow`
 
-37. You need to enforce a password policy: expiration every 90 days, a warning 14 days before expiry, and automatic account disablement if not changed within 115 days. How would you implement this?
+37. You need to enforce a password policy: expiration every 90 days, a warning 14 days before expiry, and automatic account disablement if not changed within 25 days. How would you implement this?
 
    * Use `chage` command:
 
@@ -247,6 +249,6 @@
    ```
    > These defaults are used when creating new users and enforcing password policies.
 
-39. How do you find 30 days old a files in /tmp nad delete those files in Linux?**
+39. How do you find 30 days old a files in /tmp and delete those files in Linux?**
 
     * `find /tmp -type f -mtime +30 -exec rm -f {} \;`
