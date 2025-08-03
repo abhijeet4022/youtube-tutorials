@@ -90,7 +90,7 @@
 
 13. What is the use case of NFS and how can you configure it? Suppose you want to share a 20GB mount point (/mnt/share) using NFS—how would you set it up, and how would a client machine mount it permanently?
 
-* On server: Add `/mnt/share *(rw,sync)` in `/etc/exports`, run `exportfs -a` and start `nfs-server`
+* On server: Add `/mnt/share *(rw,sync,no_root_squash)` in `/etc/exports`, run `exportfs -a` and start `nfs-server`
   On client: Add `server:/mnt/share /mnt nfs defaults 0 0` in `/etc/fstab` and run `mount -a`
 
 14. Can you explain the entries inside /etc/fstab and the use case of this file?
