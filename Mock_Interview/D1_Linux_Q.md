@@ -34,8 +34,9 @@
 
 6. You need to run a script every night at 12:30 AM. How would you schedule that using a cron job?
 
-    * `30 0 * * * /path/to/script.sh`
+    * `30 0 * * * <user> /path/to/script.sh`
       This is a cron job format and should be placed in the crontab. We can add it using `crontab -e` for user-specific jobs or `/etc/crontab` for system-wide.
+> if editing the /etc/crontab file, you need to specify the username as well.
 
 7. You have a requirement: /var/log/messages should rotate weekly, retain 4 files, have permissions "root root 640", be compressed, and not rotate if empty. How would you configure this using logrotate?
 
