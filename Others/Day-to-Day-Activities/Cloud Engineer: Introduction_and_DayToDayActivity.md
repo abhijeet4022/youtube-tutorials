@@ -25,4 +25,4 @@
 - Finally, my day usually ends with a standup meeting, where we discuss backlog tasks, current progress, and any blockers that need to be addressed. That is pretty much my day-to-day activity.
 
 
-> _Disclaimer: This is one common example. Your day-to-day activities may differ based on your specific role, responsibilities, and skills.
+> Disclaimer: This is one common example. Your day-to-day activities may differ based on your specific role, responsibilities, and skills.
