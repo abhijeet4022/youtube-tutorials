@@ -1,6 +1,6 @@
 # Tell Me About Yourself
 
-My name is "Your Name", and I am a "Science Graduate" from the class of "2024", with nearly "Experienc in years" years of experience as a Cloud Support Associate at "Your Company Name" — including 1 year as an intern and the remainder as a full-time employee. I specialize in AWS and Linux, focusing on managing cloud infrastructure and Linux servers. My role involves extensive hands-on work with Linux operating systems and AWS services, where I handle system administration, incident management, troubleshooting, and performance optimization. I also manage changes and service requests to ensure high availability and stability of cloud environments.
+My name is "Your Name", and I am a "Science Graduate" from the class of "2024", with nearly "Experienc in years" years of experience as a "Cloud Support Associate" at "Your Company Name" — including 1 year as an intern and the remainder as a full-time employee. I specialize in AWS and Linux, focusing on managing cloud infrastructure and Linux servers. My role involves extensive hands-on work with Linux operating systems and AWS services, where I handle system administration, incident management, troubleshooting, and performance optimization. I also manage changes and service requests to ensure high availability and stability of cloud environments.
 
 > Note: If you did not attend any internship, you can skip the internship part and mention your full-time experience only.
 
