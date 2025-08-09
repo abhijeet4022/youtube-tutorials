@@ -18,9 +18,9 @@
 
 - Throughout the day, We work on incident, service request (SR), and change management using ServiceNow (SNOW), following the ITIL framework. Tasks often include like:
 
- * Troubleshooting CPU and disk utilization issues
- * Investigating application performance degradation
- * Resolving user access-related incidents
+  * Troubleshooting CPU and disk utilization issues
+  * Investigating application performance degradation
+  * Resolving user access-related incidents
 
 - Finally, my day usually ends with a standup meeting, where we discuss backlog tasks, current progress, and any blockers that need to be addressed. That is pretty much my day-to-day activity.
 
