@@ -284,7 +284,7 @@ Q9. You deployed a web app using Nginx, but when accessing the site, you get a 5
 
 Q10. What is the minimal network traffic flow when accessing a web application hosted on an AWS Linux server from a browser?
 * **Answer :**
-When a user accesses a web application hosted on an AWS Linux server from a browser, the minimal network traffic flow involves the following steps:
+* When a user accesses a web application hosted on an AWS Linux server from a browser, the minimal network traffic flow involves the following steps:
 1. DNS Resolution
   * The browser sends a DNS request to resolve the domain name to the associated IP.
   * If using Route 53, it resolves to:
