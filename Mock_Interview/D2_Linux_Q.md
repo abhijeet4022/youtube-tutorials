@@ -1,8 +1,7 @@
 **Linux Interview FAQs**
 
 Q1. How to fix Application file system full issue?
-- Answer
-When a file system becomes full on a Linux server, follow the steps below to investigate and resolve the issue.
+* When a file system becomes full on a Linux server, follow the steps below to investigate and resolve the issue.
 
 1. **Identify the Full File System**
 
