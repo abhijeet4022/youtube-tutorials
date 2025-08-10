@@ -1,8 +1,7 @@
 **Linux Interview FAQs**
 
 Q1. How to fix Application file system full issue?
-- **Answer:**
-When a file system becomes full on a Linux server, follow the steps below to investigate and resolve the issue.
+- When a file system becomes full on a Linux server, follow the steps below to investigate and resolve the issue.
 
 1. **Identify the Full File System**
 
@@ -32,7 +31,6 @@ When a file system becomes full on a Linux server, follow the steps below to inv
 * Schedule and perform the file system extension activity.
 
 Q2. You're running out of space on /var, which is an LVM volume. Walk me through the steps to increase the size of /var by 5GB. Assume a new disk /dev/xvdf is attached.
-- **Answer:**
 
 > Refer the video for LVM: [LVM Extension Video](https://youtu.be/M7dk5mRBBwk)
 
@@ -60,7 +58,7 @@ xfs_growfs /var                       # For xfs
 ```
 
 Q3. Boot Process: Can you explain what happens from the moment you power on a Linux system till you get the login prompt?
-**Answer:**
+Answer:
 
 1. **BIOS** – Initializes hardware and finds boot device.
 2. **MBR/GPT** – Loads the bootloader (GRUB).
