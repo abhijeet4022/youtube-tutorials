@@ -1,7 +1,7 @@
 **Linux Interview FAQs**
 
 Q1. How to fix Application file system full issue?
-* **Answer:**
+* **Answer :**
 * When a file system becomes full on a Linux server, follow the steps below to investigate and resolve the issue.
 
 1. **Identify the Full File System**
@@ -32,7 +32,7 @@ Q1. How to fix Application file system full issue?
 * Schedule and perform the file system extension activity.
 
 Q2. You're running out of space on /var, which is an LVM volume. Walk me through the steps to increase the size of /var by 5GB. Assume a new disk /dev/xvdf is attached.
-* **Answer:**
+* **Answer :**
 > Refer the video for LVM: [LVM Extension Video](https://youtu.be/M7dk5mRBBwk)
 
 ```bash
@@ -59,7 +59,7 @@ xfs_growfs /var                       # For xfs
 ```
 
 Q3. Boot Process: Can you explain what happens from the moment you power on a Linux system till you get the login prompt?
-- Answer:
+* **Answer :**
 
 1. **BIOS** – Initializes hardware and finds boot device.
 2. **MBR/GPT** – Loads the bootloader (GRUB).
@@ -230,6 +230,7 @@ Q6. When you are planning to patch production servers. What are the steps you ta
 * Notify stakeholders
 
 Q7. One of your EC2 Linux servers is running slow. What Linux commands and tools do you use to troubleshoot performance issues?
+* **Answer :**
 ```bash
 top/htop       # CPU, memory
 vmstat         # Memory and CPU activity
@@ -241,7 +242,7 @@ Monitoring tools: Prometheus, Grafana
 ```
 
 Q8. Suppose you have received an alert stating that CPU utilization of any particular application server is high (85%). What steps will you take for this alert?
-**Answer:**
+* **Answer :**
 1. Verify the Alert:
   * Log into the server.
   * Use top or htop to confirm real-time CPU usage.
@@ -270,7 +271,7 @@ Q8. Suppose you have received an alert stating that CPU utilization of any parti
 
 
 Q9. You deployed a web app using Nginx, but when accessing the site, you get a 502 Bad Gateway. How do you troubleshoot this?
-**Answer:**
+* **Answer :**
 
 * Check the nginx server is up and running if the server is shutdown state or due to high load sometime server won't respond.
 * Check the nginx service status: `systemctl status nginx`
@@ -282,7 +283,7 @@ Q9. You deployed a web app using Nginx, but when accessing the site, you get a 5
 * Curl backend directly: `curl localhost:<port>`
 
 Q10. What is the minimal network traffic flow when accessing a web application hosted on an AWS Linux server from a browser?
-**Answer:**
+* **Answer :**
 When a user accesses a web application hosted on an AWS Linux server from a browser, the minimal network traffic flow involves the following steps:
 1. DNS Resolution
   * The browser sends a DNS request to resolve the domain name to the associated IP.
@@ -327,6 +328,7 @@ Q14. How do you list all running processes?
 * Use `ps aux` or `top` or `ps -u <user>`.
 
 Q15. What will be the cron expression if we want to run the job
+* **Answer :**
 1. Every one hour
 2. Every one day
 3. Twice in a day like morning 6 AM and 6 PM?
@@ -336,6 +338,7 @@ Q15. What will be the cron expression if we want to run the job
 * Twice a day at 6 AM and 6 PM: `0 6,18 * * *`
 
 Q16. How will you check the security patches and severity?
+* **Answer :**
 - List Available Security Updates with Details: `yum updateinfo list security all`
 ```
 RHSA-2025:1234 Important/Sec. kernel-3.10.0-1160.88.1.el7.x86_64
