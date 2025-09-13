@@ -58,6 +58,125 @@ resize2fs /dev/<vg_name>/<lv_name>   # For ext4
 xfs_growfs /var                       # For xfs
 ```
 
+Q3. Boot Process: Can you explain what happens from the moment you power on a Linux system till you get the login prompt?
+* **Answer :**
+
+1. **BIOS** – Initializes hardware and finds boot device.
+2. **MBR/GPT** – Loads the bootloader (GRUB).
+3. **GRUB** – Loads the kernel and initrd.
+4. **Kernel** – Initializes drivers, mounts root FS.
+5. **init/systemd** – Starts target services.
+6. **Login Prompt** – System ready for user login.
+
+**Details:**
+## Step 1: BIOS / UEFI
+
+### BIOS:
+
+* Stands for **Basic Input/Output System**.
+* The first program executed, stored in read-only memory on the motherboard.
+* Performs **POST (Power-On Self-Test)** to verify hardware components and peripherals.
+* Checks for bootable devices like hard disk, USB, CD, etc.
+* Once a bootable device is detected, it hands over control to the **first sector** of the bootable device (i.e., **MBR**).
+
+### UEFI (Unified Extensible Firmware Interface):
+
+* Modern replacement for BIOS.
+* Stored on the motherboard; provides more advanced features:
+
+  * Supports disks **larger than 2 TB**.
+  * Boots from **GPT-partitioned** disks.
+  * Provides a **graphical interface** and **mouse support**.
+  * Supports **Secure Boot**, **fast boot**, and **network boot (PXE)**.
+  * Looks for **EFI executable files** in the **EFI System Partition** (usually `/boot/efi/EFI/`).
+
+---
+
+## Step 2: MBR / GPT
+
+### MBR (Master Boot Record)
+* Stands for **Master Boot Record**.
+* Located in the **first 512 bytes** of any bootable device.
+* Contains machine code instructions for booting and includes:
+
+  * **Boot Loader** (446 bytes)
+  * **Partition Table** (64 bytes)
+  * **Boot Signature/Error Checking** (2 bytes)
+* Loads the bootloader into memory and hands over control.
+
+### GPT (GUID Partition Table)
+
+* Stands for **GUID Partition Table**.
+* Modern replacement for MBR, used with **UEFI** firmware.
+* Key features:
+
+  * Supports **disks larger than 2 TB**.
+  * Allows up to **128 partitions**.
+
+---
+
+## Step 3: GRUB (GRand Unified Bootloader)
+
+* Loads the following configuration files at boot time:
+
+  * `/boot/grub2/grub.cfg` (BIOS)
+  * `/boot/efi/EFI/redhat/grub.cfg` (UEFI)
+* Displays GUI/text menu to select OS or Kernel.
+* Once a kernel is selected, GRUB locates:
+
+  * Kernel binary: `/boot/vmlinuz-<version>`
+  * Initramfs image: `/boot/initramfs-<version>.img`
+* Main job is to load the **kernel** and **initramfs** into memory.
+* **Note:**
+
+  * `initrd` was used before Linux 7.
+  * From Linux 7 onward, `initramfs` is used.
+* GRUB is primarily for **x86 architectures**.
+
+  * Other architectures may use different bootloaders (e.g., **ELILO** for Intel Itanium).
+
+---
+
+## Step 4: Kernel
+
+* The **kernel** is loaded into memory by GRUB2 in **read-only** mode.
+* The **initramfs** provides a minimal root filesystem to:
+
+  * Detect hardware
+  * Load required drivers/modules
+  * Mount the real root filesystem (e.g., LVM, RAID)
+* After the real root filesystem is mounted, initramfs is removed from memory.
+* The kernel then executes the first **user-space process**: `systemd`.
+
+> **Note:** Kernel and initramfs files are stored in the `/boot` directory.
+
+---
+
+## Step 5: Systemd
+
+* First service/process started by the kernel with **PID 1**.
+* Manages system boot, services, targets, and shutdown.
+* Starts all required units as defined in:
+
+  * `/etc/systemd/system/default.target`
+* Brings the system to the appropriate **runlevel/target (0–6)**.
+* View available targets:
+
+  ```bash
+  ls -l /usr/lib/systemd/system/runlevel*
+  ```
+
+## Step 6: Run Levels
+
+* **Init 0** – Shutdown
+* **Init 1** – Single User Mode
+* **Init 2** – Multi User without Network
+* **Init 3** – Multi User with Network
+* **Init 4** – Unused
+* **Init 5** – GUI Mode
+* **Init 6** – Restart
+
+
 Q4. How do you ensure a cron job ran successfully? What logs do you check and how would you debug a failing cron?
 * We can ensure a cron job ran successfully by checking the following:
 * We can verify our required task is completed or not.
@@ -110,7 +229,7 @@ Q6. When you are planning to patch production servers. What are the steps you ta
 * Verify application functionality
 * Notify stakeholders
 
-Q7. One of your EC2 Linux servers is running slow. What steps will you use to troubleshoot performance issues?
+Q7. One of your EC2 Linux servers is running slow. What Linux commands and tools do you use to troubleshoot performance issues?
 * **Answer :**
 ```bash
 top/htop       # CPU, memory
@@ -195,6 +314,10 @@ Q10. What is the minimal network traffic flow when accessing a web application h
     * Through the internet gateway
     * Back to the user's browser
 
+Q11. How to check the current run level and user?
+* `who -r`
+* `whoami`
+
 Q12. How do you view the contents of a .tar.gz file without extracting it?
 * `tar -tzf file.tar.gz`
 
@@ -203,6 +326,16 @@ Q13. How do you check which ports are listening?
 
 Q14. How do you list all running processes?
 * Use `ps aux` or `top` or `ps -u <user>`.
+
+Q15. What will be the cron expression if we want to run the job
+* **Answer :**
+1. Every one hour
+2. Every one day
+3. Twice in a day like morning 6 AM and 6 PM?
+**Answer:**
+* Every one hour: `0 */1 * * *`
+* Every one day: `0 0 * * *`
+* Twice a day at 6 AM and 6 PM: `0 6,18 * * *`
 
 Q16. How will you check the security patches and severity?
 * **Answer :**
@@ -216,6 +349,9 @@ RHSA-2025:3456 Low/Sec. bash-4.2.46-34.el7.x86_64
 - Show Detailed Info (e.g., severity, CVE, advisory): `yum updateinfo info security`
 - Filter by Severity (e.g., only Critical or Important): `yum updateinfo list security severity=Critical`
 - View detailed info about the advisory: `yum updateinfo info RHSA-2025:1234`
+
+Q17. How will you verify the severity and details of the patches for RHEL?
+* We can verify the severity and details of the patches for Redhat Portal: [Red Hat Security](https://access.redhat.com/security/security-updates/)
 
 Q18. How do you apply security updates only manually? And also if you have to update all the packages?
 * Apply Security Updates Only: `yum update --security -y`
