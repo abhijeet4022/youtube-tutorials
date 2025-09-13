@@ -345,12 +345,196 @@ aws elbv2 register-targets \
 
 ---
 
+20. How do you manage unmanaged AWS resources in Terraform?
+
+Use the terraform import command to import the unmanaged resources into Terraform state.
+Steps to Manage Unmanaged AWS Resources in Terraform are:
+Identify the existing AWS resource and note its ID.
+Write the corresponding Terraform resource block (without applying it).
+Import the resource: terraform import <resource_type>.<resource_name> <resource_id>
+Verify the imported resource: terraform show
+Update the Terraform configuration using the output from terraform show.
+Check for changes: terraform plan
+Apply the final configuration: terraform apply
+Note: terraform.tfstate.lock.info - State lock file
 
 
-Q25. How can you ensure the services that were running before patching are still running after applying security patches and rebooting in RHEL?
-* List active services and store the output:
-`systemctl list-units --type=service --state=running > /root/running-services-before.txt`
-* After reboot, list running services again:
-`systemctl list-units --type=service --state=running > /root/running-services-after.txt`
-Compare both lists: `diff /root/running-services-before.txt /root/running-services-after.txt`
-# This will show which services are missing, added, or unchanged.
+14. If an S3 bucket was created through Terraform but someone manually added a policy to it, how do you handle this situation using IaC?
+
+If the S3 bucket was already created by Terraform, then we can fetch the policy and include it in the Terraform code and apply it.
+If the bucket was created manually, we can import the bucket completely with the policy.
+Or if we don't want the manual policy, we will run terraform apply, and it will remove the manual policy and apply the policy in the Terraform code.
+
+
+15. What is the folder architecture you follow for Terraform code?
+
+24. What is the folder structure of Ansible directory?
+
+ansible_project/
+│
+├── inventory/                  # Hosts file or inventory, containing the list of target machines
+│   ├── production              # Example of an inventory file for a production environment
+│   └── staging                 # Example of an inventory file for a staging environment
+│
+├── roles/                      # Directory containing roles (modular, reusable units)
+│   └── nginx/                  # Example of a role for configuring Nginx
+│       ├── tasks/              # Tasks define the main actions to be performed
+│       │   └── main.yml        # Main task file for the role (e.g., installing/configuring nginx)
+│       │
+│       ├── handlers/           # Handlers to manage specific services or actions (triggered by tasks)
+│       │   └── main.yml        # Handler file for the role (e.g., restarting nginx)
+│       │
+│       ├── templates/          # Jinja2 templates to be used in the tasks (configuration files, etc.)
+│       │   └── nginx.conf.j2   # Example of a template for nginx.conf
+│       │
+│       ├── vars/               # Variables specific to the role
+│       │   └── main.yml        # Define variables for Nginx configuration
+│       │
+│       ├── defaults/           # Default variables for the role (can be overridden in playbooks)
+│       │   └── main.yml        # Default values for variables
+│       │
+│       └── meta/               # Metadata for the role (role dependencies, author, etc.)
+│           └── main.yml        # Role metadata (e.g., dependencies, author info)
+│
+├── group_vars/                 # Variables that are defined for specific groups of hosts
+│   └── all/                    # Variables applicable to all hosts in the group
+│       └── main.yml            # Variables for all hosts
+│
+├── host_vars/                  # Variables for specific hosts
+│   └── server1/                # Variables for a specific host
+│       └── main.yml            # Variables for specific host
+
+
+15. What is dynamic inventory in ansible and how do you manage it?
+
+In Ansible, an inventory is a list of managed nodes. A dynamic inventory allows Ansible to fetch this list dynamically from external sources such as cloud providers (AWS, Azure, GCP), databases, or APIs, instead of using a static file.
+
+This is particularly useful in cloud environments where servers are provisioned or terminated dynamically. Instead of manually updating an inventory file, Ansible can query live instances and retrieve host information on demand.
+
+Example: Configuring Dynamic Inventory for AWS EC2 using Inventory Plugin
+
+Step 1: Install Required Dependencies
+
+Before setting up the inventory, install the boto3 and botocore Python libraries, which allow Ansible to interact with AWS.
+
+pip install boto3 botocore
+Step 2: Create an AWS EC2 Inventory File (aws_ec2.yml)
+
+plugin: amazon.aws.aws_ec2  # Specifies the AWS EC2 inventory plugin
+regions:
+- ap-southeast-1          # Define the AWS region(s) to query instances from
+  keyed_groups:
+- key: tags.Name          # Group EC2 instances based on their "Name" tag
+  prefix: instance_       # Prefix groups with "instance_" (e.g., instance_webserver)
+  filters:
+  instance-state-name: running  # Only include running instances
+  compose:
+  ansible_host: public_ip_address  # Use the public IP for SSH connections
+  Step 3: Test the Inventory Configuration
+
+Run the following command to retrieve a list of AWS EC2 instances dynamically:
+
+ansible-inventory -i aws_ec2.yml --list
+This will output a real-time inventory of all running instances in ap-southeast-1, grouped by their tags.
+
+Step 4: Use Dynamic Inventory in a Playbook
+
+Once the dynamic inventory is working, you can use it in an Ansible playbook.
+
+ansible-playbook -i aws_ec2.yml playbook.yml
+This ensures that Ansible runs on the latest set of instances without manually updating inventory files.
+
+
+
+Q. How to call any role from anisble playbook?
+
+
+27. I have many plays in a playbook but I want only few plays in it to run. How can I achieve it?
+
+Use --tags or --start-at-task.
+
+To run the playbook starting from the "Copy nginx configuration" task, use the following command:
+ansible-playbook playbook.yml --start-at-task="Copy nginx configuration"
+To run only the tasks tagged with install (in this case, only the "Install nginx" task):
+ansible-playbook playbook.yml --tags install
+28. I have a playbook whose logs I want no one to see while running. How to achieve it?
+
+In Ansible, no_log: true is used to suppress task output and hide sensitive information (such as passwords or API keys) from being printed to the console or logs. It prevents any output (including errors) for tasks where you want to ensure confidentiality.
+
+
+
+31. What is a provisioner in Terraform?
+
+In Terraform, a provisioner is a mechanism used to execute scripts or commands on resources after they have been created or updated. Provisioners are typically used to perform tasks that require interacting with the newly created infrastructure, such as installing software, configuring settings, or running initialization scripts.
+
+32. How does Terraform detect drift in configuration?
+
+Terraform detects drift in configuration by using the terraform plan or terraform apply command. Drift occurs when the actual infrastructure state deviates from the expected state defined in the Terraform configuration.
+
+How Terraform Detects Drift:
+
+State Comparison
+
+Terraform maintains a state file (terraform.tfstate) that records the infrastructure's last known state.
+When you run terraform plan, Terraform queries the actual infrastructure and compares it with the state file.
+Detecting Differences
+
+If Terraform finds discrepancies (e.g., manually changed configurations in the cloud provider console), it marks those changes as drift.
+It displays the differences in the terraform plan output.
+Resolving Drift
+
+Running terraform apply can reconcile the drift by:
+Reverting changes: If the infrastructure differs from the desired state, Terraform will adjust it to match the configuration.
+Updating state: If the drifted changes are intentional and should be retained, the Terraform configuration or state must be updated.
+33. What happens if I make manual change in configuration of infrastructure provisioned by Terraform and run apply the Terraform script again?
+
+When you manually change a resource outside of Terraform's configuration and then run terraform apply again, Terraform compares the current state of your infrastructure (queried from the provider) with the state file and your configuration files. If it detects any differences, it considers these as drift.
+
+Here's what happens:
+
+Drift Detection: Terraform identifies that the resource's actual settings differ from what's declared in your configuration.
+Plan Generation: Running terraform plan shows a proposed change to revert the manual modifications, aligning the infrastructure back to the configuration's state.
+Reconciliation: When you apply the plan, Terraform makes the necessary changes to bring the resource back into the desired state.
+This behavior ensures that the infrastructure remains consistent with the defined configuration. If you intend to keep the manual changes, you must update the Terraform configuration accordingly and then apply.
+
+
+Q. How do you manage the terraform state file in a team environment?
+Q. When is state lock and how will u deal if conflict happen ?
+Q. 40. What are modules and how are they useful in provisioning infrastructure?
+
+In Terraform, a module is a collection of resources that are grouped together for reuse. It helps organize infrastructure code and allows you to easily replicate configurations across different environments or projects.
+
+Modules are useful because they promote reusability, enabling you to define infrastructure once and use it multiple times. They also help simplify code by reducing duplication, ensuring consistency across deployments, and making maintenance easier—any updates made to a module automatically reflect in all instances where it's used.
+
+For example, you can create a module for provisioning a VPC and then call it in different parts of your configuration to set up multiple VPCs without rewriting the same code. Modules help save time, avoid repetition, and make sharing configurations easier.
+
+Q. How can you recover if ec2 key lost
+
+- What is the use of Template in ansible ?
+- How to run any job of particular role
+- - name: Catalogue Configuration
+    ansible.builtin.import_role:
+    name: common
+    tasks_from: nodejs
+- How to import task
+- - name: Schema setup
+    ansible.builtin.import_tasks: schema.yml
+    when: schema is defined
+30. What is the difference between ALB and NLB in AWS?
+31. What happens if you stop and start an EC2 instance with an ephemeral volume?
+32. How do you create a CloudWatch alarm for high CPU usage ?
+33. Can you design an web server with HA along with loadbalcing.
+34. What is the use case of NAT Gateway and in which subnet will you create this.
+35. How VM from private subnet can reach to internet to download any package.
+36. What is VPC peering and how can u configure it.
+37. What is the diff between SG and NACL ?
+38. What is the diff between Elastic IP and Public IP and Private IP ?
+39. What is the diff between ALB and NLB ?
+40. What is the usecase of ASG ?
+41. Your Private EC2 instance need to connect to S3 bucket. How will you achieve this ?
+42. How can u optimize the S3 cost ?
+43. What is s3 bucket versioning ?
+44. What is the diff between Authentication and Authorization ?
+45. What is the diff between IAM role and IAM policy ?
+
+
