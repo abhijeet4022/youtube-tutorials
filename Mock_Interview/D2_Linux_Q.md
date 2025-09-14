@@ -523,6 +523,25 @@ module "vpc" {
 
 ---
 
+### Q\. What is the difference between Elastic IP, Public IP, and Private IP in AWS?
+
+- **Elastic IP**: Static public IP you own; can be remapped to different instances.
+- **Public IP**: Dynamic IP assigned by AWS; changes if the instance stops/starts.
+- **Private IP**: Internal IP within a VPC; used for internal communication between instances.
+---
+
+## What is the use case of an Auto Scaling Group \(ASG\) in AWS?
+
+**Answer:**
+
+An Auto Scaling Group \(ASG\) automatically scales EC2 instances up or down based on demand, ensuring high availability, fault tolerance, and cost optimization. Use cases include:
+
+- Handling traffic spikes by adding instances automatically.
+- Maintaining minimum instances for HA across multiple AZs.
+- Replacing unhealthy instances to ensure application availability.
+- Scaling down during low traffic to reduce costs.
+---
+
 ### Q. What is the traffic flow when you SSH to a machine via a bastion host?
 
 **Answer:**
@@ -582,6 +601,92 @@ Responses follow the same path back
 ### 3️⃣ Cross-Zone Load Balancing
 - **ALB:** Enabled by default, balances traffic evenly across targets in all AZs.
 - **NLB:** Must be explicitly enabled for cross-zone balancing; otherwise, traffic is distributed only to targets in the same AZ as the incoming request.
+
+---
+
+## Q. What is VPC peering, and how can you configure it in AWS?
+
+**A:**  
+VPC Peering is a networking connection between two VPCs that allows them to route traffic privately using private IPs without going through the internet or a VPN.
+
+**Steps to Configure VPC Peering:**
+1. **Create a VPC Peering Connection:**  
+   Initiate from the requester VPC to the accepter VPC.
+
+2. **Accept the Peering Request:**  
+   The owner of the accepter VPC accepts the connection.
+
+3. **Update Route Tables:**  
+   Add routes in both VPCs pointing to each other’s CIDR via the peering connection.
+
+4. **Update Security Groups:**  
+   Allow traffic from the peer VPC’s CIDR in the relevant security groups.
+
+> **Note:** VPC peering is non-transitive — traffic cannot route through one peered VPC to another.
+
+---
+
+## Q34. What is the use case of a NAT Gateway, and in which subnet should it be created?
+
+**A:**
+
+**Use Case:**  
+Allows instances in private subnets to access the internet for updates, patches, or external API calls without exposing them to inbound internet traffic.
+
+**Subnet Placement:**
+- NAT Gateway must be created in a public subnet with a route to the Internet Gateway \(IGW\).
+- Private subnets’ route tables point `0.0.0.0/0` traffic to the NAT Gateway.
+
+**Summary:**  
+Private instances → NAT Gateway \(public subnet\) → Internet, ensuring secure outbound connectivity.
+
+---
+
+## Q35. How can a VM in a private subnet reach the internet to download packages? What are the required steps and route entries?
+
+**A:**
+
+**Steps:**
+1. **Create a NAT Gateway:**  
+   Place the NAT Gateway in a public subnet with an Elastic IP.
+
+2. **Update Route Table for Private Subnet:**  
+   Add a route pointing all internet-bound traffic \(`0.0.0.0/0`\) to the NAT Gateway.
+
+3. **Security Groups / NACLs:**
+    - Ensure the VM’s security group allows outbound traffic \(e.g., HTTP/HTTPS\).
+    - NACLs should allow outbound and return inbound traffic.
+
+**Route Table Entries Example:**
+
+**Private Subnet Route Table**
+| Destination   | Target      |
+|---------------|-------------|
+| 10.0.0.0/16   | local       |
+| 0.0.0.0/0     | NAT Gateway |
+
+**Public Subnet Route Table \(where NAT resides\)**
+| Destination   | Target      |
+|---------------|-------------|
+| 10.0.0.0/16   | local       |
+| 0.0.0.0/0     | Internet GW |
+
+**Summary:**  
+VM in a private subnet → NAT Gateway in public subnet → Internet.  
+This allows private instances to download packages or access the internet without exposing them directly.
+
+---
+### Q\. What is the difference between Security Groups \(SG\) and Network ACLs \(NACL\) in AWS?
+
+**Feature** | **Security Group \(SG\)** | **Network ACL \(NACL\)**
+--- | --- | ---
+Level | Instance-level | Subnet-level
+Type | Stateful \(return traffic allowed automatically\) | Stateless \(return traffic must be explicitly allowed\)
+Rules | Allow rules only | Allow and deny rules
+Evaluation | All rules evaluated before allowing traffic | Rules evaluated in order, first match applies
+Scope | Attached to EC2, RDS, Lambda, etc\. | Applies to entire subnet
+
+✅ **Summary:** SGs are stateful firewalls for instances, NACLs are stateless firewalls for subnets, providing an extra layer of security.
 
 ---
 
@@ -683,3 +788,32 @@ Internet Gateway (IGW)
 - If ALB marks an instance as unhealthy, the ASG will terminate and replace it \(if ALB health checks are enabled in the ASG\)\.
 
 **Key Point:** ALB controls traffic flow, while ASG controls instance lifecycle and availability\.
+---
+
+## How to Create a CloudWatch Alarm for High CPU Usage Using Instance Tags (e\.g\., app=nginx)
+
+**Steps:**
+
+1\. **Go to CloudWatch**  
+   Open AWS CloudWatch → Alarms → Create Alarm.
+
+2\. **Select Metric**  
+   Click Select metric → EC2 → Per-Instance Metrics.  
+   Use search or filter by tag:  
+   Example: `tag:app=nginx`  
+   Select CPUUtilization metric for all instances with that tag.
+
+3\. **Set Threshold**  
+   - Threshold type: Static  
+   - Condition: CPU \> 75%  
+   - Evaluation period: e\.g\., 5 minutes
+
+4\. **Configure Actions**  
+   - Notification: Send to an SNS topic \(email, Slack, etc\.\)
+
+5\. **Name and Create**  
+   - Give a descriptive name \(e\.g\., HighCPU-nginx\)  
+   - Review → Create Alarm
+
+**Result:**  
+Any EC2 instance with the tag `app=nginx` will trigger the alarm if CPU exceeds 75%.
