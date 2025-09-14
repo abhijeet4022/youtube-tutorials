@@ -30,6 +30,7 @@ Q1. How to fix Application file system full issue?
 * Get required approvals from stakeholders (Server and Application Owner).
 * Create a Change Request (CR) following your organization’s change management process.
 * Schedule and perform the file system extension activity.
+---
 
 Q2. You're running out of space on /var, which is an LVM volume. Walk me through the steps to increase the size of /var by 5GB. Assume a new disk /dev/xvdf is attached.
 * **Answer :**
@@ -57,8 +58,9 @@ lvextend -L +5G /dev/<vg_name>/<lv_name>
 resize2fs /dev/<vg_name>/<lv_name>   # For ext4
 xfs_growfs /var                       # For xfs
 ```
+---
 
-Q4. How do you ensure a cron job ran successfully? What logs do you check and how would you debug a failing cron?
+Q3. How do you ensure a cron job ran successfully? What logs do you check and how would you debug a failing cron?
 * We can ensure a cron job ran successfully by checking the following:
 * We can verify our required task is completed or not.
 * We can check the cron job logs to see if it ran successfully or not. We can identify the error also from the logs.
@@ -75,7 +77,7 @@ grep CRON /var/log/cron   # or journalctl -u crond
 * Check the cron job's output and error logs.
 ---
 
-Q5. A log file is growing very large, and logrotate is not rotating it. What steps will you take to debug and fix this issue?
+Q4. A log file is growing very large, and logrotate is not rotating it. What steps will you take to debug and fix this issue?
 **Answer:**
 
 * Check logrotate config: `/etc/logrotate.conf` or `/etc/logrotate.d/*`
@@ -86,11 +88,9 @@ logrotate -d /etc/logrotate.conf
 ```
 * Check the logrotate service status or cron job is set properly or not to run the logrotate script.
 * Ensure correct permissions, paths, and postrotate scripts.
-
 ---
 
-
-Q6. When you are planning to patch production servers. What are the steps you take before and after patching?
+Q5. When you are planning to patch production servers. What are the steps you take before and after patching?
 **Answer:**
 **Before:**
 
@@ -109,8 +109,9 @@ Q6. When you are planning to patch production servers. What are the steps you ta
 * Verify kernel version
 * Verify application functionality
 * Notify stakeholders
+---
 
-Q7. One of your EC2 Linux servers is running slow. What steps will you use to troubleshoot performance issues?
+Q6. One of your EC2 Linux servers is running slow. What steps will you use to troubleshoot performance issues?
 * **Answer :**
 ```bash
 top/htop       # CPU, memory
@@ -121,8 +122,9 @@ df -h / du -sh # Disk usage
 sar            # Historical stats
 Monitoring tools: Prometheus, Grafana
 ```
+---
 
-Q8. Suppose you have received an alert stating that CPU utilization of any particular application server is high (85%). What steps will you take for this alert?
+Q7. Suppose you have received an alert stating that CPU utilization of any particular application server is high (85%). What steps will you take for this alert?
 * **Answer :**
 1. Verify the Alert:
   * Log into the server.
@@ -149,9 +151,9 @@ Q8. Suppose you have received an alert stating that CPU utilization of any parti
 5. Historical Analysis:
   * Check historical data from monitoring tools (like CloudWatch, Prometheus, Grafana) to see if this is a recurring issue.
   * If yes, consider scaling the instance size after approval.
+---
 
-
-Q9. You deployed a web app using Nginx, but when accessing the site, you get a 502 Bad Gateway. How do you troubleshoot this?
+Q8. You deployed a web app using Nginx, but when accessing the site, you get a 502 Bad Gateway. How do you troubleshoot this?
 * **Answer :**
 
 * Check the nginx server is up and running if the server is shutdown state or due to high load sometime server won't respond.
@@ -162,8 +164,9 @@ Q9. You deployed a web app using Nginx, but when accessing the site, you get a 5
 * Ensure the upstream server is correctly defined in the Nginx config
 * Ensure backend app is running and reachable
 * Curl backend directly: `curl localhost:<port>`
+---
 
-Q10. What is the minimal network traffic flow when accessing a web application hosted on an AWS Linux server from a browser?
+Q9. What is the minimal network traffic flow when accessing a web application hosted on an AWS Linux server from a browser?
 * **Answer :**
 * When a user accesses a web application hosted on an AWS Linux server from a browser, the minimal network traffic flow involves the following steps:
 1. DNS Resolution
@@ -194,19 +197,23 @@ Q10. What is the minimal network traffic flow when accessing a web application h
     * To the load balancer (if present)
     * Through the internet gateway
     * Back to the user's browser
+---
 
-Q12. How do you view the contents of a .tar.gz file without extracting it?
+Q10. How do you view the contents of a .tar.gz file without extracting it?
 * `tar -tzf file.tar.gz`
+---
 
-Q13. How do you check which ports are listening?
+Q11. How do you check which ports are listening?
 * `ss -tuln` or `netstat -tuln`
+---
 
-Q14. How do you list all running processes?
+Q12. How do you list all running processes?
 * Use `ps aux` or `top` or `ps -u <user>`.
+---
 
-Q16. How will you check the security patches and severity?
+Q13. How will you check the security patches and severity?
 * **Answer :**
-- List Available Security Updates with Details: `yum updateinfo list security all`
+- List Available Security Updates with Details: `yum updateinfo list security all` or `yum check-update --security`
 ```
 RHSA-2025:1234 Important/Sec. kernel-3.10.0-1160.88.1.el7.x86_64
 RHSA-2025:2345 Moderate/Sec. openssl-1.0.2k-25.el7_9.x86_64
@@ -216,24 +223,29 @@ RHSA-2025:3456 Low/Sec. bash-4.2.46-34.el7.x86_64
 - Show Detailed Info (e.g., severity, CVE, advisory): `yum updateinfo info security`
 - Filter by Severity (e.g., only Critical or Important): `yum updateinfo list security severity=Critical`
 - View detailed info about the advisory: `yum updateinfo info RHSA-2025:1234`
+---
 
-Q18. How do you apply security updates only manually? And also if you have to update all the packages?
+Q14. How do you apply security updates only manually? And also if you have to update all the packages?
 * Apply Security Updates Only: `yum update --security -y`
 * Update All Packages: `yum update -y`
+---
 
-Q19. What is the drawback or issue that may arise if you update all available packages?
+Q15. What is the drawback or issue that may arise if you update all available packages?
 * Updating all packages may lead to compatibility issues with existing applications, as newer versions of libraries or dependencies may not be compatible with the current application code.
+---
 
 Q20. How do you check if a reboot is required after patching?
 ```bash
 needs-restarting -r
 ```
+---
 
 Q21. How do you list the patches or packages updated recently?
 * To list recently updated packages, you can use:
 ```bash
 rpm -qa --last | head -n 10
 ```
+---
 
 Q22. Suppose you have updated one system and want to roll back to the previous state — how will you do that from the OS?
 ```bash
@@ -241,6 +253,7 @@ yum history list
 yum history info <transaction_id>
 yum history undo <transaction_id>
 ```
+---
 
 Q23. How do you manage patching for all environments — all servers in a single shot or part-wise?
 
@@ -273,6 +286,7 @@ For servers behind the load balancer, we patch one server at a time. Once the pa
 - If automatic update fail then will do manual patching by using the command:
 * Linux - `yum update --security -y`
 * Windows - `Setting - Check for updates - apply updates` once done reboot the server.
+---
 
 Q24. Suppose your two servers are running behind the Load Balancer and supporting one application. During patching, how will you ensure the application does not go down?
 ## Zero-Downtime Patching Behind Load Balancer Using AWS SSM
@@ -342,109 +356,58 @@ aws elbv2 register-targets \
   --targets Id=$INSTANCE_ID \
   --region <REGION>
 ```
-
 ---
 
-20. How do you manage unmanaged AWS resources in Terraform?
+### Q21. How will you patch the server running behind the Auto Scaling Group?
 
-Use the terraform import command to import the unmanaged resources into Terraform state.
-Steps to Manage Unmanaged AWS Resources in Terraform are:
-Identify the existing AWS resource and note its ID.
-Write the corresponding Terraform resource block (without applying it).
-Import the resource: terraform import <resource_type>.<resource_name> <resource_id>
-Verify the imported resource: terraform show
-Update the Terraform configuration using the output from terraform show.
-Check for changes: terraform plan
-Apply the final configuration: terraform apply
-Note: terraform.tfstate.lock.info - State lock file
+**Preferred Approach: Using a Golden AMI**
 
+1. Take the existing AMI (or instance snapshot).
+2. Launch a temporary EC2 instance from it.
+3. Apply OS and application patches on this temporary instance.
+4. Create a new AMI with all patches applied.
+5. Update the Launch Template or Launch Configuration of the ASG with the new AMI.
+6. Perform a rolling update or instance refresh on the ASG:
+   - Old instances are gradually terminated.
+   - New instances with the patched AMI are launched automatically.
+---
 
-14. If an S3 bucket was created through Terraform but someone manually added a policy to it, how do you handle this situation using IaC?
+### Q20. How do you bring unmanaged AWS resources under Terraform management?
 
-If the S3 bucket was already created by Terraform, then we can fetch the policy and include it in the Terraform code and apply it.
-If the bucket was created manually, we can import the bucket completely with the policy.
-Or if we don't want the manual policy, we will run terraform apply, and it will remove the manual policy and apply the policy in the Terraform code.
+To bring unmanaged AWS resources under Terraform management, use the `terraform import` command to import the resource into Terraform state.
 
+**Steps to Manage Unmanaged AWS Resources in Terraform:**
 
-15. What is the folder architecture you follow for Terraform code?
+1. **Identify the existing AWS resource and note its ID.**
+2. **Write the corresponding Terraform resource block (e.g., EC2) without applying it:**
+```hcl
+resource "aws_instance" "my_ec2" {
+    # Configuration will be added after import
+}
+```
+3. **Import the resource:**
+```bash
+terraform import <resource_type>.<resource_name> <resource_id>
+```
+*Example:*
+```bash
+terraform import aws_instance.my_ec2 i-1234567890abcdef0
+```
+4. **Verify the imported resource:**
+```bash
+terraform show
+```
+5. **Update the Terraform configuration aws_instance.my_ec2 block using the output value from `terraform show`.**
+6. **Check for changes:**
+```bash
+terraform plan
+```
+7. **Apply the final configuration:**
+```bash
+terraform apply
+```
 
-24. What is the folder structure of Ansible directory?
-
-ansible_project/
-│
-├── inventory/                  # Hosts file or inventory, containing the list of target machines
-│   ├── production              # Example of an inventory file for a production environment
-│   └── staging                 # Example of an inventory file for a staging environment
-│
-├── roles/                      # Directory containing roles (modular, reusable units)
-│   └── nginx/                  # Example of a role for configuring Nginx
-│       ├── tasks/              # Tasks define the main actions to be performed
-│       │   └── main.yml        # Main task file for the role (e.g., installing/configuring nginx)
-│       │
-│       ├── handlers/           # Handlers to manage specific services or actions (triggered by tasks)
-│       │   └── main.yml        # Handler file for the role (e.g., restarting nginx)
-│       │
-│       ├── templates/          # Jinja2 templates to be used in the tasks (configuration files, etc.)
-│       │   └── nginx.conf.j2   # Example of a template for nginx.conf
-│       │
-│       ├── vars/               # Variables specific to the role
-│       │   └── main.yml        # Define variables for Nginx configuration
-│       │
-│       ├── defaults/           # Default variables for the role (can be overridden in playbooks)
-│       │   └── main.yml        # Default values for variables
-│       │
-│       └── meta/               # Metadata for the role (role dependencies, author, etc.)
-│           └── main.yml        # Role metadata (e.g., dependencies, author info)
-│
-├── group_vars/                 # Variables that are defined for specific groups of hosts
-│   └── all/                    # Variables applicable to all hosts in the group
-│       └── main.yml            # Variables for all hosts
-│
-├── host_vars/                  # Variables for specific hosts
-│   └── server1/                # Variables for a specific host
-│       └── main.yml            # Variables for specific host
-
-
-15. What is dynamic inventory in ansible and how do you manage it?
-
-In Ansible, an inventory is a list of managed nodes. A dynamic inventory allows Ansible to fetch this list dynamically from external sources such as cloud providers (AWS, Azure, GCP), databases, or APIs, instead of using a static file.
-
-This is particularly useful in cloud environments where servers are provisioned or terminated dynamically. Instead of manually updating an inventory file, Ansible can query live instances and retrieve host information on demand.
-
-Example: Configuring Dynamic Inventory for AWS EC2 using Inventory Plugin
-
-Step 1: Install Required Dependencies
-
-Before setting up the inventory, install the boto3 and botocore Python libraries, which allow Ansible to interact with AWS.
-
-pip install boto3 botocore
-Step 2: Create an AWS EC2 Inventory File (aws_ec2.yml)
-
-plugin: amazon.aws.aws_ec2  # Specifies the AWS EC2 inventory plugin
-regions:
-- ap-southeast-1          # Define the AWS region(s) to query instances from
-  keyed_groups:
-- key: tags.Name          # Group EC2 instances based on their "Name" tag
-  prefix: instance_       # Prefix groups with "instance_" (e.g., instance_webserver)
-  filters:
-  instance-state-name: running  # Only include running instances
-  compose:
-  ansible_host: public_ip_address  # Use the public IP for SSH connections
-  Step 3: Test the Inventory Configuration
-
-Run the following command to retrieve a list of AWS EC2 instances dynamically:
-
-ansible-inventory -i aws_ec2.yml --list
-This will output a real-time inventory of all running instances in ap-southeast-1, grouped by their tags.
-
-Step 4: Use Dynamic Inventory in a Playbook
-
-Once the dynamic inventory is working, you can use it in an Ansible playbook.
-
-ansible-playbook -i aws_ec2.yml playbook.yml
-This ensures that Ansible runs on the latest set of instances without manually updating inventory files.
-
-
+---
 
 Q. How to call any role from anisble playbook?
 
@@ -536,5 +499,3 @@ Q. How can you recover if ec2 key lost
 43. What is s3 bucket versioning ?
 44. What is the diff between Authentication and Authorization ?
 45. What is the diff between IAM role and IAM policy ?
-
-
