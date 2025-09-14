@@ -950,3 +950,29 @@ An IAM Role is an AWS identity with permissions that can be assumed by Users \(A
 
 - **Role:** Who can assume/access. When a user, service, or application assumes the role, it inherits the permissions from the attached policies.  
 - **Policy:** What they can do. To define what the role can do, need to attach IAM Policies to it.
+---
+
+### Q46. You need to allow access to a private S3 bucket only from a specific VPC. How would you implement that?
+
+**Answer:**
+Use S3 Bucket Policy with VPC condition and a VPC endpoint:
+
+```json
+{
+  "Condition": {
+    "StringEquals": {
+      "aws:SourceVpc": "vpc-xxxxxx"
+    }
+  }
+}
+```
+---
+
+### Q47. A user reports they can’t SSH into an EC2 instance. What steps do you take to troubleshoot?
+**Answer:**
+
+* Check security group (port 22 allowed)
+* Check network ACL
+* Validate key pair used
+* Confirm server is up and running.
+* Confirm if the user is correct and allowed to login or user not locked out.
