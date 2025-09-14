@@ -1,6 +1,6 @@
 **Linux Interview FAQs**
 
-Q1. How to fix Application file system full issue?
+### Q1. How to fix Application file system full issue?
 * **Answer :**
 * When a file system becomes full on a Linux server, follow the steps below to investigate and resolve the issue.
 
@@ -32,7 +32,7 @@ Q1. How to fix Application file system full issue?
 * Schedule and perform the file system extension activity.
 ---
 
-Q2. You're running out of space on /var, which is an LVM volume. Walk me through the steps to increase the size of /var by 5GB. Assume a new disk /dev/xvdf is attached.
+### Q2. You're running out of space on /var, which is an LVM volume. Walk me through the steps to increase the size of /var by 5GB. Assume a new disk /dev/xvdf is attached.
 * **Answer :**
 > Refer the video for LVM: [LVM Extension Video](https://youtu.be/M7dk5mRBBwk)
 
@@ -60,7 +60,7 @@ xfs_growfs /var                       # For xfs
 ```
 ---
 
-Q3. How do you ensure a cron job ran successfully? What logs do you check and how would you debug a failing cron?
+### Q3. How do you ensure a cron job ran successfully? What logs do you check and how would you debug a failing cron?
 * We can ensure a cron job ran successfully by checking the following:
 * We can verify our required task is completed or not.
 * We can check the cron job logs to see if it ran successfully or not. We can identify the error also from the logs.
@@ -77,7 +77,7 @@ grep CRON /var/log/cron   # or journalctl -u crond
 * Check the cron job's output and error logs.
 ---
 
-Q4. A log file is growing very large, and logrotate is not rotating it. What steps will you take to debug and fix this issue?
+### Q4. A log file is growing very large, and logrotate is not rotating it. What steps will you take to debug and fix this issue?
 **Answer:**
 
 * Check logrotate config: `/etc/logrotate.conf` or `/etc/logrotate.d/*`
@@ -90,7 +90,7 @@ logrotate -d /etc/logrotate.conf
 * Ensure correct permissions, paths, and postrotate scripts.
 ---
 
-Q5. When you are planning to patch production servers. What are the steps you take before and after patching?
+### Q5. When you are planning to patch production servers. What are the steps you take before and after patching?
 **Answer:**
 **Before:**
 
@@ -111,7 +111,7 @@ Q5. When you are planning to patch production servers. What are the steps you ta
 * Notify stakeholders
 ---
 
-Q6. One of your EC2 Linux servers is running slow. What steps will you use to troubleshoot performance issues?
+### Q6. One of your EC2 Linux servers is running slow. What steps will you use to troubleshoot performance issues?
 * **Answer :**
 ```bash
 top/htop       # CPU, memory
@@ -124,7 +124,7 @@ Monitoring tools: Prometheus, Grafana
 ```
 ---
 
-Q7. Suppose you have received an alert stating that CPU utilization of any particular application server is high (85%). What steps will you take for this alert?
+### Q7. Suppose you have received an alert stating that CPU utilization of any particular application server is high (85%). What steps will you take for this alert?
 * **Answer :**
 1. Verify the Alert:
   * Log into the server.
@@ -153,7 +153,7 @@ Q7. Suppose you have received an alert stating that CPU utilization of any parti
   * If yes, consider scaling the instance size after approval.
 ---
 
-Q8. You deployed a web app using Nginx, but when accessing the site, you get a 502 Bad Gateway. How do you troubleshoot this?
+### Q8. You deployed a web app using Nginx, but when accessing the site, you get a 502 Bad Gateway. How do you troubleshoot this?
 * **Answer :**
 
 * Check the nginx server is up and running if the server is shutdown state or due to high load sometime server won't respond.
@@ -166,7 +166,7 @@ Q8. You deployed a web app using Nginx, but when accessing the site, you get a 5
 * Curl backend directly: `curl localhost:<port>`
 ---
 
-Q9. What is the minimal network traffic flow when accessing a web application hosted on an AWS Linux server from a browser?
+### Q9. What is the minimal network traffic flow when accessing a web application hosted on an AWS Linux server from a browser?
 * **Answer :**
 * When a user accesses a web application hosted on an AWS Linux server from a browser, the minimal network traffic flow involves the following steps:
 1. DNS Resolution
@@ -199,19 +199,19 @@ Q9. What is the minimal network traffic flow when accessing a web application ho
     * Back to the user's browser
 ---
 
-Q10. How do you view the contents of a .tar.gz file without extracting it?
+### Q10. How do you view the contents of a .tar.gz file without extracting it?
 * `tar -tzf file.tar.gz`
 ---
 
-Q11. How do you check which ports are listening?
+### Q11. How do you check which ports are listening?
 * `ss -tuln` or `netstat -tuln`
 ---
 
-Q12. How do you list all running processes?
+### Q12. How do you list all running processes?
 * Use `ps aux` or `top` or `ps -u <user>`.
 ---
 
-Q13. How will you check the security patches and severity?
+### Q13. How will you check the security patches and severity?
 * **Answer :**
 - List Available Security Updates with Details: `yum updateinfo list security all` or `yum check-update --security`
 ```
@@ -225,29 +225,29 @@ RHSA-2025:3456 Low/Sec. bash-4.2.46-34.el7.x86_64
 - View detailed info about the advisory: `yum updateinfo info RHSA-2025:1234`
 ---
 
-Q14. How do you apply security updates only manually? And also if you have to update all the packages?
+### Q14. How do you apply security updates only manually? And also if you have to update all the packages?
 * Apply Security Updates Only: `yum update --security -y`
 * Update All Packages: `yum update -y`
 ---
 
-Q15. What is the drawback or issue that may arise if you update all available packages?
+### Q15. What is the drawback or issue that may arise if you update all available packages?
 * Updating all packages may lead to compatibility issues with existing applications, as newer versions of libraries or dependencies may not be compatible with the current application code.
 ---
 
-Q20. How do you check if a reboot is required after patching?
+### Q16. How do you check if a reboot is required after patching?
 ```bash
 needs-restarting -r
 ```
 ---
 
-Q21. How do you list the patches or packages updated recently?
+### Q17. How do you list the patches or packages updated recently?
 * To list recently updated packages, you can use:
 ```bash
 rpm -qa --last | head -n 10
 ```
 ---
 
-Q22. Suppose you have updated one system and want to roll back to the previous state — how will you do that from the OS?
+### Q18. Suppose you have updated one system and want to roll back to the previous state — how will you do that from the OS?
 ```bash
 yum history list
 yum history info <transaction_id>
@@ -255,7 +255,7 @@ yum history undo <transaction_id>
 ```
 ---
 
-Q23. How do you manage patching for all environments — all servers in a single shot or part-wise?
+### Q19. How do you manage patching for all environments — all servers in a single shot or part-wise?
 
 ## Patch Severity Levels
 - **Critical**
@@ -288,7 +288,7 @@ For servers behind the load balancer, we patch one server at a time. Once the pa
 * Windows - `Setting - Check for updates - apply updates` once done reboot the server.
 ---
 
-Q24. Suppose your two servers are running behind the Load Balancer and supporting one application. During patching, how will you ensure the application does not go down?
+### Q20. Suppose your two servers are running behind the Load Balancer and supporting one application. During patching, how will you ensure the application does not go down?
 ## Zero-Downtime Patching Behind Load Balancer Using AWS SSM
 
 ### Goal
@@ -372,7 +372,7 @@ aws elbv2 register-targets \
    - New instances with the patched AMI are launched automatically.
 ---
 
-### Q20. How do you bring unmanaged AWS resources under Terraform management?
+### Q22. How do you bring unmanaged AWS resources under Terraform management?
 
 To bring unmanaged AWS resources under Terraform management, use the `terraform import` command to import the resource into Terraform state.
 
@@ -406,15 +406,14 @@ terraform plan
 ```bash
 terraform apply
 ```
-
 ---
 
-
-31. What is a provisioner in Terraform?
+### Q23. What is a provisioner in Terraform?
 
 In Terraform, a provisioner is a mechanism used to execute scripts or commands on resources after they have been created or updated. Provisioners are typically used to perform tasks that require interacting with the newly created infrastructure, such as installing software, configuring settings, or running initialization scripts.
+---
 
-Q33. Suppose you need to create an EC2 instance using Terraform, and you also want to install a few packages on it. How would you do that?
+### Q24. Suppose you need to create an EC2 instance using Terraform, and you also want to install a few packages on it. How would you do that?
 1. Using user_data (Preferred)
 ```hcl
 resource "aws_instance" "example" {
@@ -467,7 +466,7 @@ resource "aws_instance" "example" {
 ```
 ---
 
-### 32. What is Terraform drift and how does Terraform detect drift in configuration and how can you clear those drift?
+### Q25. What is Terraform drift and how does Terraform detect drift in configuration and how can you clear those drift?
 
 Terraform detects drift in configuration by using the `terraform plan` or `terraform apply` command. Drift occurs when the actual infrastructure state deviates from the expected state defined in the Terraform configuration.
 
@@ -488,7 +487,7 @@ Terraform detects drift in configuration by using the `terraform plan` or `terra
   - **Updating state:** If the drifted changes are intentional and should be retained, the Terraform configuration or state must be updated.34. 
 ---
 
-### 36\. What happens if someone makes manual changes to the configuration of infrastructure provisioned by Terraform and then runs `terraform apply` again?
+### Q26. What happens if someone makes manual changes to the configuration of infrastructure provisioned by Terraform and then runs `terraform apply` again?
 
 When a resource is manually changed outside of Terraform's configuration and you run `terraform apply` again, Terraform compares the current state of your infrastructure (queried from the provider) with the state file and your configuration files. If it detects any differences, it considers these as drift.
 
@@ -501,7 +500,7 @@ When a resource is manually changed outside of Terraform's configuration and you
 This behavior ensures that the infrastructure remains consistent with the defined configuration. If you intend to keep the manual changes, you must update the Terraform configuration accordingly and then apply.
 ---
 
-### Q. 40. What are modules and how are they useful in provisioning infrastructure?
+### Q27. What are modules and how are they useful in provisioning infrastructure?
 
 In Terraform, a module is a collection of resources grouped together for reuse. Modules help organize infrastructure code and allow you to replicate configurations across different environments or projects.
 
@@ -520,17 +519,16 @@ module "vpc" {
 }
 ```
 - This lets you provision the same VPC in dev, staging, and prod without duplicating code.
-
 ---
 
-### Q\. What is the difference between Elastic IP, Public IP, and Private IP in AWS?
+### Q28. What is the difference between Elastic IP, Public IP, and Private IP in AWS?
 
 - **Elastic IP**: Static public IP you own; can be remapped to different instances.
 - **Public IP**: Dynamic IP assigned by AWS; changes if the instance stops/starts.
 - **Private IP**: Internal IP within a VPC; used for internal communication between instances.
 ---
 
-## What is the use case of an Auto Scaling Group \(ASG\) in AWS?
+### Q29. What is the use case of an Auto Scaling Group \(ASG\) in AWS?
 
 **Answer:**
 
@@ -542,7 +540,7 @@ An Auto Scaling Group \(ASG\) automatically scales EC2 instances up or down base
 - Scaling down during low traffic to reduce costs.
 ---
 
-### Q. What is the traffic flow when you SSH to a machine via a bastion host?
+### Q30. What is the traffic flow when you SSH to a machine via a bastion host?
 
 **Answer:**
 
@@ -577,10 +575,9 @@ Responses follow the same path back
 > **Note:** Traffic from your laptop reaches the private EC2 via Bastion’s public IP. The private subnet doesn’t need an explicit route to the bastion — it uses the VPC local route in the route table.
 
 ✅ **Summary:** Your laptop → VPN → Bastion host → Private EC2 → Bastion → Laptop, with route tables, subnets, and security groups controlling access at each step.
-
 ---
 
-## 30. What is the difference between ALB and NLB in AWS?
+### Q31. What is the difference between ALB and NLB in AWS?
 
 ### 1️⃣ Path and Host-Based Routing (ALB only)
 - **ALB (Application Load Balancer)** works at Layer 7 (HTTP/HTTPS), so it can route traffic based on:
@@ -601,10 +598,9 @@ Responses follow the same path back
 ### 3️⃣ Cross-Zone Load Balancing
 - **ALB:** Enabled by default, balances traffic evenly across targets in all AZs.
 - **NLB:** Must be explicitly enabled for cross-zone balancing; otherwise, traffic is distributed only to targets in the same AZ as the incoming request.
-
 ---
 
-## Q. What is VPC peering, and how can you configure it in AWS?
+### Q32. What is VPC peering, and how can you configure it in AWS?
 
 **A:**  
 VPC Peering is a networking connection between two VPCs that allows them to route traffic privately using private IPs without going through the internet or a VPN.
@@ -623,10 +619,9 @@ VPC Peering is a networking connection between two VPCs that allows them to rout
    Allow traffic from the peer VPC’s CIDR in the relevant security groups.
 
 > **Note:** VPC peering is non-transitive — traffic cannot route through one peered VPC to another.
-
 ---
 
-## Q34. What is the use case of a NAT Gateway, and in which subnet should it be created?
+### Q33. What is the use case of a NAT Gateway, and in which subnet should it be created?
 
 **A:**
 
@@ -639,10 +634,9 @@ Allows instances in private subnets to access the internet for updates, patches,
 
 **Summary:**  
 Private instances → NAT Gateway \(public subnet\) → Internet, ensuring secure outbound connectivity.
-
 ---
 
-## Q35. How can a VM in a private subnet reach the internet to download packages? What are the required steps and route entries?
+### Q34. How can a VM in a private subnet reach the internet to download packages? What are the required steps and route entries?
 
 **A:**
 
@@ -674,9 +668,9 @@ Private instances → NAT Gateway \(public subnet\) → Internet, ensuring secur
 **Summary:**  
 VM in a private subnet → NAT Gateway in public subnet → Internet.  
 This allows private instances to download packages or access the internet without exposing them directly.
-
 ---
-### Q\. What is the difference between Security Groups \(SG\) and Network ACLs \(NACL\) in AWS?
+
+### Q35. What is the difference between Security Groups \(SG\) and Network ACLs \(NACL\) in AWS?
 
 **Feature** | **Security Group \(SG\)** | **Network ACL \(NACL\)**
 --- | --- | ---
@@ -687,10 +681,9 @@ Evaluation | All rules evaluated before allowing traffic | Rules evaluated in or
 Scope | Attached to EC2, RDS, Lambda, etc\. | Applies to entire subnet
 
 ✅ **Summary:** SGs are stateful firewalls for instances, NACLs are stateless firewalls for subnets, providing an extra layer of security.
-
 ---
 
-## 32. What happens if you stop and start an EC2 instance with an ephemeral volume?
+### Q36. What happens if you stop and start an EC2 instance with an ephemeral volume?
 
 An **ephemeral (instance store) volume** is temporary storage physically attached to the host. If the instance is stopped, all data on the ephemeral volume is lost. If the ephemeral volume is the OS disk, the instance itself will be lost upon shutdown, but rebooting the server does not affect the data.
 
@@ -724,7 +717,7 @@ Select CPUUtilization metric for all instances with that tag.
 Any EC2 instance with the tag `app=nginx` will trigger the alarm if CPU exceeds 75%.
 ---
 
-## 33. Can you design a highly available web server architecture with load balancing in AWS?
+### Q37. Can you design a highly available web server architecture with load balancing in AWS?
 
 ### Step 1: Create a VPC
 - Define a VPC with a CIDR block (e.g., `10.0.0.0/16`).
@@ -799,9 +792,9 @@ NAT Gateway (Public Subnet)
 |
 Internet Gateway (IGW)
 ```
-
 ---
-### Q. How do ALB and Auto Scaling Group (ASG) perform health checks, and what happens when an instance is unhealthy?
+
+### Q38. How do ALB and Auto Scaling Group (ASG) perform health checks, and what happens when an instance is unhealthy?
 
 **ALB vs ASG Health Checks**
 
@@ -818,7 +811,7 @@ Internet Gateway (IGW)
 **Key Point:** ALB controls traffic flow, while ASG controls instance lifecycle and availability\.
 ---
 
-### Q\. What is S3 bucket versioning in AWS?
+### Q39. What is S3 bucket versioning in AWS?
 
 **A:**  
 S3 bucket versioning is a feature that keeps multiple versions of an object in the same bucket. It allows you to:
@@ -830,8 +823,9 @@ S3 bucket versioning is a feature that keeps multiple versions of an object in t
 You cannot fully disable versioning once it’s been enabled. You can only suspend versioning, which stops creating new versions, but existing versions remain.
 
 ✅ Once enabled, every PUT, POST, or DELETE creates a unique version ID for the object.
+---
 
-### Q\. How can you optimize S3 costs in AWS?
+### Q40. How can you optimize S3 costs in AWS?
 
 **A:**
 
@@ -850,8 +844,9 @@ You cannot fully disable versioning once it’s been enabled. You can only suspe
 
 - **Use S3 Intelligent-Tiering:**
   - Automatically moves data between frequent/infrequent access tiers based on usage.
+---
 
-### Q\. How can a private EC2 instance connect to an S3 bucket in AWS?
+### Q41. How can a private EC2 instance connect to an S3 bucket in AWS?
 
 **A:** Using a Gateway Endpoint for S3
 
@@ -886,9 +881,9 @@ You cannot fully disable versioning once it’s been enabled. You can only suspe
    From the private EC2 instance, run:  
    ```bash
    aws s3 ls s3://<bucket-name>
+---
 
-
-### Q\. How do you restrict S3 bucket access?
+### Q42. How do you restrict S3 bucket access?
 
 You can restrict access to an S3 bucket using multiple methods:
 
@@ -929,21 +924,23 @@ You can restrict access to an S3 bucket using multiple methods:
   
   - **Encryption \& MFA Delete \(Optional\):**  
     Enforce encryption and MFA delete for extra security.
+---
 
-### Q. What is the difference between Authentication and Authorization?
+### Q43. What is the difference between Authentication and Authorization?
 
 **Authentication:** Verifies who the user is.  
 *Example:* Logging in with username and password or using AWS IAM credentials.
 
 **Authorization:** Determines what the user is allowed to do.  
 *Example:* Permissions to access an S3 bucket, launch EC2, or modify resources.
+---
 
-### Q\. What is an IAM Role in AWS?
+### Q44. What is an IAM Role in AWS?
 
 **A:**  
 An IAM Role is an AWS identity with permissions that can be assumed by Users \(Assume Role\), Services, or Applications. It provides temporary credentials to securely access AWS resources without using long-term credentials.
 
-### Q\. What is the difference between IAM Role and IAM Policy in AWS?
+### Q45. What is the difference between IAM Role and IAM Policy in AWS?
 
 **IAM Role:** An AWS identity that can be assumed by users, services, or applications to get temporary permissions. It defines who can assume it, but does not itself define specific permissions until policies are attached.
 
