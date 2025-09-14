@@ -409,60 +409,119 @@ terraform apply
 
 ---
 
-Q. How to call any role from anisble playbook?
-
-
-27. I have many plays in a playbook but I want only few plays in it to run. How can I achieve it?
-
-Use --tags or --start-at-task.
-
-To run the playbook starting from the "Copy nginx configuration" task, use the following command:
-ansible-playbook playbook.yml --start-at-task="Copy nginx configuration"
-To run only the tasks tagged with install (in this case, only the "Install nginx" task):
-ansible-playbook playbook.yml --tags install
-28. I have a playbook whose logs I want no one to see while running. How to achieve it?
-
-In Ansible, no_log: true is used to suppress task output and hide sensitive information (such as passwords or API keys) from being printed to the console or logs. It prevents any output (including errors) for tasks where you want to ensure confidentiality.
-
-
 
 31. What is a provisioner in Terraform?
 
 In Terraform, a provisioner is a mechanism used to execute scripts or commands on resources after they have been created or updated. Provisioners are typically used to perform tasks that require interacting with the newly created infrastructure, such as installing software, configuring settings, or running initialization scripts.
 
-32. How does Terraform detect drift in configuration?
+Q33. Suppose you need to create an EC2 instance using Terraform, and you also want to install a few packages on it. How would you do that?
+1. Using user_data (Preferred)
+```hcl
+resource "aws_instance" "example" {
+  ami           = "ami-0c55b159cbfafe1f0"   # Amazon Linux 2 AMI
+  instance_type = "t2.micro"
+  subnet_id     = "subnet-12345678"
 
-Terraform detects drift in configuration by using the terraform plan or terraform apply command. Drift occurs when the actual infrastructure state deviates from the expected state defined in the Terraform configuration.
+  user_data = <<-EOF
+              #!/bin/bash
+              yum update -y
+              yum install -y httpd git
+              systemctl enable httpd
+              systemctl start httpd
+              EOF
 
-How Terraform Detects Drift:
+  tags = {
+    Name = "Terraform-EC2"
+  }
+}
+```
+2. Using Terraform Provisioners (remote-exec)
 
-State Comparison
+```hcl
+resource "aws_instance" "example" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+  subnet_id     = "subnet-12345678"
+  key_name      = "my-keypair"
 
-Terraform maintains a state file (terraform.tfstate) that records the infrastructure's last known state.
-When you run terraform plan, Terraform queries the actual infrastructure and compares it with the state file.
-Detecting Differences
+  provisioner "remote-exec" {
+    inline = [
+      "sudo yum update -y",
+      "sudo yum install -y httpd git",
+      "sudo systemctl enable httpd",
+      "sudo systemctl start httpd"
+    ]
 
-If Terraform finds discrepancies (e.g., manually changed configurations in the cloud provider console), it marks those changes as drift.
-It displays the differences in the terraform plan output.
-Resolving Drift
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = file("~/.ssh/my-keypair.pem")
+      host        = self.public_ip
+    }
+  }
 
-Running terraform apply can reconcile the drift by:
-Reverting changes: If the infrastructure differs from the desired state, Terraform will adjust it to match the configuration.
-Updating state: If the drifted changes are intentional and should be retained, the Terraform configuration or state must be updated.
-33. What happens if I make manual change in configuration of infrastructure provisioned by Terraform and run apply the Terraform script again?
+  tags = {
+    Name = "Terraform-EC2-Provisioned"
+  }
+}
+```
+---
 
-When you manually change a resource outside of Terraform's configuration and then run terraform apply again, Terraform compares the current state of your infrastructure (queried from the provider) with the state file and your configuration files. If it detects any differences, it considers these as drift.
+### 32. What is Terraform drift and how does Terraform detect drift in configuration and how can you clear those drift?
 
-Here's what happens:
+Terraform detects drift in configuration by using the `terraform plan` or `terraform apply` command. Drift occurs when the actual infrastructure state deviates from the expected state defined in the Terraform configuration.
 
-Drift Detection: Terraform identifies that the resource's actual settings differ from what's declared in your configuration.
-Plan Generation: Running terraform plan shows a proposed change to revert the manual modifications, aligning the infrastructure back to the configuration's state.
-Reconciliation: When you apply the plan, Terraform makes the necessary changes to bring the resource back into the desired state.
+**How Terraform Detects Drift:**
+
+- **State Comparison:**  
+  Terraform maintains a state file (`terraform.tfstate`) that records the infrastructure's last known state.  
+  When you run `terraform plan`, Terraform queries the actual infrastructure and compares it with the state file.
+
+- **Detecting Differences:**  
+  If Terraform finds discrepancies (e.g., manually changed configurations in the cloud provider console), it marks those changes as drift.  
+  It displays the differences in the `terraform plan` output.
+
+**Resolving Drift:**
+
+- Running `terraform apply` can reconcile the drift by:
+  - **Reverting changes:** If the infrastructure differs from the desired state, Terraform will adjust it to match the configuration.
+  - **Updating state:** If the drifted changes are intentional and should be retained, the Terraform configuration or state must be updated.34. 
+---
+
+### 36\. What happens if someone makes manual changes to the configuration of infrastructure provisioned by Terraform and then runs `terraform apply` again?
+
+When a resource is manually changed outside of Terraform's configuration and you run `terraform apply` again, Terraform compares the current state of your infrastructure (queried from the provider) with the state file and your configuration files. If it detects any differences, it considers these as drift.
+
+**Here's what happens:**
+
+- **Drift Detection:** Terraform identifies that the resource's actual settings differ from what's declared in your configuration.
+- **Plan Generation:** Running `terraform plan` shows a proposed change to revert the manual modifications, aligning the infrastructure back to the configuration's state.
+- **Reconciliation:** When you apply the plan, Terraform makes the necessary changes to bring the resource back into the desired state.
+
 This behavior ensures that the infrastructure remains consistent with the defined configuration. If you intend to keep the manual changes, you must update the Terraform configuration accordingly and then apply.
+---
 
+### Q. How does Terraform manage the state of resources it creates?
 
-Q. How do you manage the terraform state file in a team environment?
-Q. When is state lock and how will u deal if conflict happen ?
+**A:**  
+Terraform uses a state file \(`terraform.tfstate`\) to track the resources it manages. This file maps Terraform configuration to the real-world infrastructure.
+
+---
+
+### Q\. How do you manage the Terraform state file in a team environment?
+
+**A:**  
+In a team environment, Terraform state should be stored remotely instead of locally to ensure collaboration, consistency, and safety.
+---
+
+### Q. What is state lock and how will you deal if a conflict happens?
+
+* State lock prevents multiple Terraform processes from modifying the same state file at once.
+* If a conflict happens:
+  * Wait and retry (another user may be running Terraform).
+  * If the lock is stuck, use `terraform force-unlock <LOCK_ID>` \(only if sure no other process is running\).
+---
+
 Q. 40. What are modules and how are they useful in provisioning infrastructure?
 
 In Terraform, a module is a collection of resources that are grouped together for reuse. It helps organize infrastructure code and allows you to easily replicate configurations across different environments or projects.
@@ -483,6 +542,22 @@ Q. How can you recover if ec2 key lost
 - - name: Schema setup
     ansible.builtin.import_tasks: schema.yml
     when: schema is defined
+
+Q. How to call any role from anisble playbook?
+
+
+27. I have many plays in a playbook but I want only few plays in it to run. How can I achieve it?
+
+Use --tags or --start-at-task.
+
+To run the playbook starting from the "Copy nginx configuration" task, use the following command:
+ansible-playbook playbook.yml --start-at-task="Copy nginx configuration"
+To run only the tasks tagged with install (in this case, only the "Install nginx" task):
+ansible-playbook playbook.yml --tags install
+28. I have a playbook whose logs I want no one to see while running. How to achieve it?
+
+In Ansible, no_log: true is used to suppress task output and hide sensitive information (such as passwords or API keys) from being printed to the console or logs. It prevents any output (including errors) for tasks where you want to ensure confidentiality.
+
 30. What is the difference between ALB and NLB in AWS?
 31. What happens if you stop and start an EC2 instance with an ephemeral volume?
 32. How do you create a CloudWatch alarm for high CPU usage ?
