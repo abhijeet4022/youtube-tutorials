@@ -20,9 +20,3 @@ In Ansible, no_log: true is used to suppress task output and hide sensitive info
 
 
 
-
-Your Private EC2 instance need to connect to S3 bucket. How will you achieve this ?
-
-
-What is the diff between Authentication and Authorization ?
-What is the diff between IAM role and IAM policy ?
