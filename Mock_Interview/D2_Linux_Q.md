@@ -695,6 +695,34 @@ Scope | Attached to EC2, RDS, Lambda, etc\. | Applies to entire subnet
 An **ephemeral (instance store) volume** is temporary storage physically attached to the host. If the instance is stopped, all data on the ephemeral volume is lost. If the ephemeral volume is the OS disk, the instance itself will be lost upon shutdown, but rebooting the server does not affect the data.
 
 ---
+## How to Create a CloudWatch Alarm for High CPU Usage Using Instance Tags (e\.g\., app=nginx)
+
+**Steps:**
+
+1\. **Go to CloudWatch**  
+Open AWS CloudWatch → Alarms → Create Alarm.
+
+2\. **Select Metric**  
+Click Select metric → EC2 → Per-Instance Metrics.  
+Use search or filter by tag:  
+Example: `tag:app=nginx`  
+Select CPUUtilization metric for all instances with that tag.
+
+3\. **Set Threshold**
+- Threshold type: Static
+- Condition: CPU \> 75%
+- Evaluation period: e\.g\., 5 minutes
+
+4\. **Configure Actions**
+- Notification: Send to an SNS topic \(email, Slack, etc\.\)
+
+5\. **Name and Create**
+- Give a descriptive name \(e\.g\., HighCPU-nginx\)
+- Review → Create Alarm
+
+**Result:**  
+Any EC2 instance with the tag `app=nginx` will trigger the alarm if CPU exceeds 75%.
+---
 
 ## 33. Can you design a highly available web server architecture with load balancing in AWS?
 
@@ -790,30 +818,3 @@ Internet Gateway (IGW)
 **Key Point:** ALB controls traffic flow, while ASG controls instance lifecycle and availability\.
 ---
 
-## How to Create a CloudWatch Alarm for High CPU Usage Using Instance Tags (e\.g\., app=nginx)
-
-**Steps:**
-
-1\. **Go to CloudWatch**  
-   Open AWS CloudWatch → Alarms → Create Alarm.
-
-2\. **Select Metric**  
-   Click Select metric → EC2 → Per-Instance Metrics.  
-   Use search or filter by tag:  
-   Example: `tag:app=nginx`  
-   Select CPUUtilization metric for all instances with that tag.
-
-3\. **Set Threshold**  
-   - Threshold type: Static  
-   - Condition: CPU \> 75%  
-   - Evaluation period: e\.g\., 5 minutes
-
-4\. **Configure Actions**  
-   - Notification: Send to an SNS topic \(email, Slack, etc\.\)
-
-5\. **Name and Create**  
-   - Give a descriptive name \(e\.g\., HighCPU-nginx\)  
-   - Review → Create Alarm
-
-**Result:**  
-Any EC2 instance with the tag `app=nginx` will trigger the alarm if CPU exceeds 75%.
