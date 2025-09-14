@@ -818,3 +818,36 @@ Internet Gateway (IGW)
 **Key Point:** ALB controls traffic flow, while ASG controls instance lifecycle and availability\.
 ---
 
+### Q\. What is S3 bucket versioning in AWS?
+
+**A:**  
+S3 bucket versioning is a feature that keeps multiple versions of an object in the same bucket. It allows you to:
+
+- Recover deleted or overwritten objects.
+- Maintain historical versions for auditing or rollback.
+- Protect data from accidental deletion or overwrites.
+
+You cannot fully disable versioning once it’s been enabled. You can only suspend versioning, which stops creating new versions, but existing versions remain.
+
+✅ Once enabled, every PUT, POST, or DELETE creates a unique version ID for the object.
+
+### Q\. How can you optimize S3 costs in AWS?
+
+**A:**
+
+- **Use Proper S3 Storage Classes:**
+  - Standard-IA / One Zone-IA for infrequently accessed data.
+  - Glacier / Glacier Deep Archive for archival data.
+
+- **Enable Lifecycle Policies:**
+  - Automatically transition objects to cheaper storage or delete old objects.
+
+- **Delete Unused Objects:**
+  - Remove obsolete files, old versions, or incomplete multipart uploads.
+
+- **Enable Versioning Carefully:**
+  - Versioning keeps multiple copies; combine with lifecycle rules to delete old versions.
+
+- **Use S3 Intelligent-Tiering:**
+  - Automatically moves data between frequent/infrequent access tiers based on usage.
+

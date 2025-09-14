@@ -16,15 +16,13 @@ To run the playbook starting from the "Copy nginx configuration" task, use the f
 In Ansible, no_log: true is used to suppress task output and hide sensitive information (such as passwords or API keys) from being printed to the console or logs. It prevents any output (including errors) for tasks where you want to ensure confidentiality.
 
 
-How do you create a CloudWatch alarm for high CPU usage ?
-
 
 
 
 
 
 Your Private EC2 instance need to connect to S3 bucket. How will you achieve this ?
-How can u optimize the S3 cost ?
-What is s3 bucket versioning ?
+
+
 What is the diff between Authentication and Authorization ?
 What is the diff between IAM role and IAM policy ?
