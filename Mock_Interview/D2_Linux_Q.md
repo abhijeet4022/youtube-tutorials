@@ -950,5 +950,3 @@ An IAM Role is an AWS identity with permissions that can be assumed by Users \(A
 
 - **Role:** Who can assume/access. When a user, service, or application assumes the role, it inherits the permissions from the attached policies.  
 - **Policy:** What they can do. To define what the role can do, need to attach IAM Policies to it.
-
-
