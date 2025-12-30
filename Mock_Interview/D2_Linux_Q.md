@@ -134,9 +134,10 @@ Monitoring tools: Prometheus, Grafana
 
 2. Identify the Root Cause:
   * Run `ps -eo pid,ppid,cmd,%cpu --sort=-%cpu | head` to find top CPU-consuming processes.
-  * Use `top` and press `Shift + P` to sort by memory usage.
+  * Use `top` and press `Shift + P` to sort by CPU usage.
   * Check if a particular process, service, or user is responsible.
   * Sometimes due to more user load or peeks in application usage, CPU usage can spike. And after few minutes it will come down automatically.
+  * If we are facing utilization issue after application update then there might be chnage of code bug which need to inform to developer as well.
 
 3. System-Level Process Check
   * Check if a system daemon, scheduled cron job, or a misbehaving kernel process is responsible for high CPU usage.
