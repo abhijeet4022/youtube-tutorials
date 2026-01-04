@@ -972,6 +972,7 @@ Use S3 Bucket Policy with VPC condition and a VPC endpoint:
 ### Q47. A user reports they can’t SSH into an EC2 instance. What steps do you take to troubleshoot?
 **Answer:**
 
+* Engineer also can try to take the ssh of the server and if it works then probably the issue is with user side and if not then the issue is with server side.
 * Confirm if the user is correct and allowed to login or user not locked out.
 * Validate key pair and password used by user is correct.
 * Confirm server is up and running.
