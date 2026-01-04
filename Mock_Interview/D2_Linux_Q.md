@@ -34,9 +34,10 @@
 
 ### Q2. You're running out of space on /var, which is an LVM volume. Walk me through the steps to increase the size of /var by 5GB. Assume a new disk /dev/xvdf is attached.
 * **Answer :**
-> Refer the video for LVM: [LVM Extension Video](https://youtu.be/M7dk5mRBBwk)
+> Refer the video for LVM Extension with current disk: [LVM Extension Video](https://youtu.be/M7dk5mRBBwk)
 
 ```bash
+**By New Disk:**
 # 1. Verify the space is available on current volume group.
 vgs
 
@@ -127,20 +128,18 @@ Monitoring tools: Prometheus, Grafana
 ### Q7. Suppose you have received an alert stating that CPU utilization of any particular application server is high (85%). What steps will you take for this alert?
 * **Answer :**
 1. Verify the Alert:
-  * Log into the server.
-  * Use top or htop to confirm real-time CPU usage.
+  * Log into the server and run top or htop to confirm real-time CPU usage.
   * Use uptime to check system load averages.
   * We can use monitoring tools like CloudWatch, Prometheus, or Grafana to verify the alert.
 
 2. Identify the Root Cause:
   * Run `ps -eo pid,ppid,cmd,%cpu --sort=-%cpu | head` to find top CPU-consuming processes.
   * Use `top` and press `Shift + P` to sort by CPU usage.
-  * Check if a particular process, service, or user is responsible.
+  * Check that particular process is application related or system related.
   * Sometimes due to more user load or peeks in application usage, CPU usage can spike. And after few minutes it will come down automatically.
-  * If we are facing utilization issue after application update then there might be chnage of code bug which need to inform to developer as well.
 
 3. System-Level Process Check
-  * Check if a system daemon, scheduled cron job, or a misbehaving kernel process is responsible for high CPU usage.
+  * Check if a system service, scheduled cron job is responsible for high CPU usage.
   * if a system process is consuming high CPU, check its logs or configuration.
   * Any scheduled jobs or cron tasks that might be running at the time of high CPU usage. Wait to complete the job.
   * Check memory usage (free -m) — high memory pressure can cause CPU spikes.
@@ -148,10 +147,11 @@ Monitoring tools: Prometheus, Grafana
 4. Application-Level Check:
   * If it's an application service causing the issue, take the screenshots and notify the application team (Application Owner/Server Owner).
   * Restart the process if it’s unresponsive or consuming abnormally high CPU After taking the necessary approvals.
+  * If this issue came after application update by application then there might be change of code bug which need to inform to developer/application owner.
 
 5. Historical Analysis:
   * Check historical data from monitoring tools (like CloudWatch, Prometheus, Grafana) to see if this is a recurring issue.
-  * If yes, consider scaling the instance size after approval.
+  * If yes like daily or weekly basis, consider scaling the instance size after approval.
 ---
 
 ### Q8. You deployed a web app using Nginx, but when accessing the site, you get a 502 Bad Gateway. How do you troubleshoot this?
