@@ -1,6 +1,6 @@
 # Tell Me About Yourself
 
-My name is "Your Name", and I am a "Science Graduate" from the class of "2024", with nearly "Experienc in years" years of experience as a "Cloud Support Associate" at "Your Company Name" — including 1 year as an intern and the remainder as a full-time employee. I specialize in AWS and Linux, focusing on managing cloud infrastructure and Linux servers. My role involves extensive hands-on work with Linux operating systems and AWS services, where I handle system administration, incident management, troubleshooting, and performance optimization. I also manage changes and service requests to ensure high availability and stability of cloud environments.
+My name is "Your Name", and I am a "Science Graduate" from the class of "2024", with nearly "Experience in years" years of experience as a "Cloud Support Associate" at "Your Company Name" — including 1 year as an intern and the remainder as a full-time employee. I specialize in AWS and Linux, focusing on managing cloud infrastructure and Linux servers. My role involves extensive hands-on work with Linux operating systems and AWS services, where I handle system administration, incident management, troubleshooting, and performance optimization. I also manage changes and service requests to ensure high availability and stability of cloud environments.
 
 > Note: If you did not attend any internship, you can skip the internship part and mention your full-time experience only.
 
@@ -14,13 +14,13 @@ My name is "Your Name", and I am a "Science Graduate" from the class of "2024", 
 
 - We also involved in VM lifecycle management, including:
   * Provisioning new virtual machines based on team/project requirements
-  * Decommissioning unused or legacy systems after validation
+  * Decommissioning the unused servers after proper validation and approval
 
 - Throughout the day, We work on incident, service request (SR), and change management using ServiceNow (SNOW), following the ITIL framework. Tasks often include like:
 
-  * Troubleshooting CPU and disk utilization issues
-  * Investigating application performance degradation
-  * Resolving user access-related incidents
+  * Troubleshooting CPU, Memory and disk utilization issues.
+  * Investigating application performance degradation issues.
+  * Resolving user created incidents
 
 - Finally, my day usually ends with a standup meeting, where we discuss backlog tasks, current progress, and any blockers that need to be addressed. That is pretty much my day-to-day activity.
 
