@@ -972,11 +972,12 @@ Use S3 Bucket Policy with VPC condition and a VPC endpoint:
 ### Q47. A user reports they can’t SSH into an EC2 instance. What steps do you take to troubleshoot?
 **Answer:**
 
-* Check security group (port 22 allowed)
-* Check network ACL
-* Validate key pair used
-* Confirm server is up and running.
 * Confirm if the user is correct and allowed to login or user not locked out.
+* Validate key pair and password used by user is correct.
+* Confirm server is up and running.
+* Confirm sshd service is running on the instance without any issue.
+* Check security group (port 22 allowed) also verify NACLs if implemented.
+
 ---
 
 ### Q48. What is Ansible and why is it used?
