@@ -5,10 +5,11 @@
 * When a file system becomes full on a Linux server, follow the steps below to investigate and resolve the issue.
 
 1. **Identify the Full File System**
+* Use the following command to check disk usage: df -hT
+* This command shows mounted file systems, their types, and usage in human-readable format.
+* Identify which file system is 100% or nearly full like more than 80%.
 
-* Use: `df -hT`
-* Identify which file system is 100% or nearly full.
-
+Note: If it OS filesystem like /, /var, /home etc then we need to take care of it and if it is application specific mount point then we need to inform the respective application owner/team and App team will help for cleanup.
 2. **Navigate to the Affected Mount Point**
 
 * `cd /path/to/full/mount`
@@ -20,9 +21,10 @@
 
 4. **Take Action to Free Up Space**
 
-* Inform respective user or team.
-* Delete or compress unnecessary files.
-* Move files to another location.
+* Inform respective application user or team if the files belong to them.
+* If permitted, delete unnecessary files. (Only if it's os drive and we know it won't impact anything for APP mount point need to take confirmation from app team before deletion)
+* Compress large files using tools like gzip, xz, or tar if deletion is not an option and compression is acceptable.
+* Move files to another location if permitted.
 
 5. **If Cleanup is Not Sufficient**
 
