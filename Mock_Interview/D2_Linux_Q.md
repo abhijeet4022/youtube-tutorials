@@ -202,7 +202,7 @@ Monitoring tools: Prometheus, Grafana
     * Back to the user's browser
 ---
 
-### Q10. How do you view the contents of a .tar.gz file without extracting it?
+### Q10. How do you view the contents of a .tar.gz file without extracting it ?
 * `tar -tzf file.tar.gz`
 ---
 
@@ -797,7 +797,7 @@ Internet Gateway (IGW)
 ```
 ---
 
-### Q38. How do ALB and Auto Scaling Group (ASG) perform health checks, and what happens when an instance is unhealthy?
+### Q38. How do ALB and Auto Scaling Group (ASG) perform health checks, and what happens when an instance is unhealthy ?
 
 **ALB vs ASG Health Checks**
 
